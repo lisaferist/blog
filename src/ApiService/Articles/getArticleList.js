@@ -1,4 +1,7 @@
-async function getArticleList() {
+async function getArticleList(offset) {
+  const url = offset
+    ? `https://blog-platform.kata.academy/api/articles&offset=${offset}`
+    : 'https://blog-platform.kata.academy/api/articles'
   const optionsObj = {
     method: 'GET',
     headers: {

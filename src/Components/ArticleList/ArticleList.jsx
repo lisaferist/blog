@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Spin } from 'antd'
 
 import Article from '../Article'
-import { fetchArticleList, setGettingInterval } from '../../Store/articlesSlice'
+import { fetchArticleList } from '../../Store/articlesSlice'
 
 export default function ArticleList() {
   const articleList = useSelector((state) => state.articles.articleList)
@@ -13,13 +13,7 @@ export default function ArticleList() {
   const articlesOnCurrentPage = articleList[currentPage]
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(
-      setGettingInterval({
-        interval: setInterval(() => {
-          dispatch(fetchArticleList())
-        }, 1000),
-      })
-    )
+    dispatch(fetchArticleList())
   }, [dispatch])
   const content =
     status !== 'fulfilled' ? (

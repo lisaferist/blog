@@ -5,7 +5,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import getArticleList from '../ApiService/Articles/getArticleList'
 
 export const fetchArticleList = createAsyncThunk('articles/fetchArticleList', async () => {
-  const data = await getArticleList
+  const offset = 20
+  const data = (await getArticleList)(offset)
   return { ...data }
 })
 const articlesSlice = createSlice({
@@ -17,7 +18,6 @@ const articlesSlice = createSlice({
     currentPage: 1,
     error: null,
     errorMessage: null,
-    gettingInterval: null,
     status: null,
     token: null,
     totalPageCount: null,
@@ -26,11 +26,6 @@ const articlesSlice = createSlice({
     changeCurrentPage(state, action) {
       state.currentPage = action.payload.page
       state.articleList = { ...state.articleList, [state.currentPage]: null }
-    },
-    setGettingInterval(state, action) {
-      if (!state.gettingInterval) {
-        state.gettingInterval = action.payload.interval
-      }
     },
   },
   extraReducers: (builder) => {
@@ -57,4 +52,4 @@ const articlesSlice = createSlice({
 
 export default articlesSlice.reducer
 
-export const { changeCurrentPage, setGettingInterval } = articlesSlice.actions
+export const { changeCurrentPage } = articlesSlice.actions
