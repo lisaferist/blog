@@ -1,0 +1,115 @@
+@import "../../style";
+
+.article {
+  background-color: white;
+  width: 100%;
+  height: 140px;
+  padding: 10px 15px;
+
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+
+  border: $border-grey;
+  border-radius: 5px;
+  box-shadow: 0 0 15px 0 $border-grey;
+
+  .article__header {
+
+    display: flex;
+    justify-content: space-between;
+
+    .article__title {
+      display: inline-block;
+      margin: 0;
+
+      color: $blue;
+      font-size: 20px;
+      font-weight: normal;
+    }
+
+    .article__like {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 0;
+      height: 20px;
+
+      font-size: 12px;
+
+      position: relative;
+      top: -3px;
+      border: none;
+      background-color: inherit;
+      text-justify: distribute-center-last;
+
+      .article__like-icon {
+        font-size: 18px;
+        background: url("../../Images/heart.svg") no-repeat bottom 0 left 0;
+
+        display: inline-block;
+        position: relative;
+        top: 3px;
+        width: 16px;
+        height: 20px;
+
+        margin-right: 3px;
+      }
+    }
+
+    .article__tag-list {
+      list-style: none;
+      padding: 0;
+
+      display: flex;
+      flex-direction: row;
+
+      .article__tag {
+        color: $grey;
+        border: 1px solid $grey;
+        border-radius: 3px;
+        padding: 3px;
+        margin-right: 8px;
+      }
+      .article__tag:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .article__author-user {
+      width: 141px;
+      height: 46px;
+      display: grid;
+      grid-template-rows: 23px 23px;
+
+      .article__user-name {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .article__user-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+      }
+
+      .article__user-avatar--no-avatar {
+        background-image: url("../../Images/avatar.svg");
+        background-color: darkred;
+      }
+
+      .article__post-date {
+        margin: 0;
+        font-size: 12px;
+        color: $grey;
+      }
+    }
+  }
+
+  .article__text {
+    height: 45px;
+    overflow: hidden;
+  }
+}

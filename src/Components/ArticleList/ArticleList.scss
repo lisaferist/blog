@@ -1,0 +1,15 @@
+@import "../../style";
+
+.article-list {
+  list-style: none;
+
+  width: 940px;
+  padding: 0;
+  margin: 0;
+  .article-list__article:first-child {
+    margin-top: 25px;
+  }
+  .article-list__article {
+    margin-bottom: 25px;
+  }
+}
