@@ -14,7 +14,6 @@ const articlesSlice = createSlice({
   name: 'articles',
   initialState: {
     articleList: {},
-    // сделать из артикл лист мапу
     articlesCount: null,
     currentPage: 1,
     error: null,

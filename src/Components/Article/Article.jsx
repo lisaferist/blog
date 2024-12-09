@@ -1,5 +1,4 @@
 import React from 'react'
-
 import './Article.scss'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
@@ -7,9 +6,8 @@ import { enGB } from 'date-fns/locale'
 export default function Article({ articleObj }) {
   let tags = null
   if (articleObj.tags) {
-    tags = articleObj.tags.map((tag, index) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <li className="article__tag" key={`${articleObj.slug}${index}`}>
+    tags = articleObj.tags.map((tag) => (
+      <li className="article__tag" key={`${articleObj.slug}_${tag}`}>
         {tag}
       </li>
     ))
