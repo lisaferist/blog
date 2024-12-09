@@ -75,12 +75,14 @@
     }
 
     .article__author-user {
-      width: 141px;
+      width: 180px;
       height: 46px;
       display: grid;
       grid-template-rows: 23px 23px;
 
       .article__user-name {
+        width: 134px;
+        overflow: hidden;
         margin: 0;
         font-size: 18px;
       }

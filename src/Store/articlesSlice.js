@@ -4,10 +4,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import getArticleList from '../ApiService/Articles/getArticleList'
 
-export const fetchArticleList = createAsyncThunk('articles/fetchArticleList', async () => {
-  const offset = 20
-  const data = (await getArticleList)(offset)
-  return { ...data }
+export const fetchArticleList = createAsyncThunk('articles/fetchArticleList', async (arg, thunkAPI) => {
+  const state = thunkAPI.getState()
+  const offset = (state.articles.currentPage - 1) * 20
+  const data = offset !== 0 ? await getArticleList(offset) : await getArticleList()
+  return data
 })
 const articlesSlice = createSlice({
   name: 'articles',

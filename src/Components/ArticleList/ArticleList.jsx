@@ -8,18 +8,16 @@ import { fetchArticleList } from '../../Store/articlesSlice'
 
 export default function ArticleList() {
   const articleList = useSelector((state) => state.articles.articleList)
-  const status = useSelector((state) => state.articles.status)
   const currentPage = useSelector((state) => state.articles.currentPage)
   const articlesOnCurrentPage = articleList[currentPage]
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchArticleList())
   }, [dispatch])
-  const content =
-    status !== 'fulfilled' ? (
-      <Spin size="large" />
-    ) : (
-      articlesOnCurrentPage.map((articleObj) => <Article articleObj={articleObj} key={articleObj.slug} />)
-    )
+  const content = !articlesOnCurrentPage ? (
+    <Spin size="large" />
+  ) : (
+    articlesOnCurrentPage.map((articleObj) => <Article articleObj={articleObj} key={articleObj.slug} />)
+  )
   return <ul className="article-list">{content}</ul>
 }

@@ -1,6 +1,8 @@
 import React from 'react'
 
 import './Article.scss'
+import { format, parseISO } from 'date-fns'
+import { enGB } from 'date-fns/locale'
 
 export default function Article({ articleObj }) {
   let tags = null
@@ -18,6 +20,16 @@ export default function Article({ articleObj }) {
     <div className="article__user-avatar article__user-avatar--no-avatar" />
   )
 
+  function editOverview(text) {
+    const maxOverviewLength = 13
+    if (text.length > maxOverviewLength + 2) {
+      let newText = text.substring(0, maxOverviewLength)
+      newText = `${newText.replace(/\s+\S*$/, '')}...`
+      return newText
+    }
+    return text
+  }
+
   return (
     <li className="article-list__article article">
       <div className="article__header">
@@ -30,9 +42,11 @@ export default function Article({ articleObj }) {
           <ul className="article__tag-list">{tags}</ul>
         </div>
         <div className="article__author-user">
-          <p className="article__user-name">{articleObj.author.username}</p>
+          <p className="article__user-name">{editOverview(articleObj.author.username)}</p>
           {avatar}
-          <p className="article__post-date">{articleObj.createdAt}</p>
+          <p className="article__post-date">
+            {format(parseISO(articleObj.createdAt), 'LLLL d, yyyy', { locale: enGB })}
+          </p>
         </div>
       </div>
       <p className="article__text">{articleObj.body}</p>

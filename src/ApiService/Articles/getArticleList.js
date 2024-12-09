@@ -1,6 +1,6 @@
 async function getArticleList(offset) {
   const url = offset
-    ? `https://blog-platform.kata.academy/api/articles&offset=${offset}`
+    ? `https://blog-platform.kata.academy/api/articles?offset=${offset}`
     : 'https://blog-platform.kata.academy/api/articles'
   const optionsObj = {
     method: 'GET',
@@ -8,7 +8,7 @@ async function getArticleList(offset) {
       'Content-Type': 'application/json',
     },
   }
-  const response = await fetch('https://blog-platform.kata.academy/api/articles', optionsObj)
+  const response = await fetch(url, optionsObj)
   const body = await response.json()
   return body
 }
@@ -59,4 +59,4 @@ async function getArticleList(offset) {
 //   "articlesCount": 2
 // }
 
-export default getArticleList()
+export default getArticleList

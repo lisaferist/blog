@@ -1,5 +1,5 @@
 import './App.scss'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ConfigProvider, Pagination } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -11,6 +11,12 @@ function App() {
   const articleList = useSelector((state) => state.articles.articleList)
   const currentPage = useSelector((state) => state.articles.currentPage)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (!articleList[currentPage]) {
+      dispatch(fetchArticleList())
+    }
+  }, [currentPage])
 
   return (
     <ConfigProvider
@@ -42,9 +48,6 @@ function App() {
           hideOnSinglePage="true"
           total={Math.ceil(articlesCount / 20)}
           onChange={(e) => {
-            if (!articleList[e]) {
-              dispatch(fetchArticleList())
-            }
             dispatch(changeCurrentPage({ page: e }))
           }}
           align="center"
