@@ -3,8 +3,9 @@ import './ArticleList.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { Spin } from 'antd'
 
-import Article from '../Article'
+import ArticleInList from '../ArticleInList'
 import { fetchArticleList } from '../../Store/articlesSlice'
+import ErrorBlock from '../HOCs/ErrorBlock'
 
 export default function ArticleList() {
   const articleList = useSelector((state) => state.articles.articleList)
@@ -17,7 +18,11 @@ export default function ArticleList() {
   const content = !articlesOnCurrentPage ? (
     <Spin size="large" />
   ) : (
-    articlesOnCurrentPage.map((articleObj) => <Article articleObj={articleObj} key={articleObj.slug} />)
+    articlesOnCurrentPage.map((articleObj) => (
+      <ErrorBlock>
+        <ArticleInList articleObj={articleObj} key={articleObj.slug} />
+      </ErrorBlock>
+    ))
   )
   return <ul className="article-list">{content}</ul>
 }

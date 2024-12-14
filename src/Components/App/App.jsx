@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import ArticleList from '../ArticleList'
 import { changeCurrentPage, fetchArticleList } from '../../Store/articlesSlice'
+import ErrorBlock from '../HOCs/ErrorBlock'
 
 function App() {
   const articlesCount = useSelector((state) => state.articles.articlesCount)
@@ -40,7 +41,9 @@ function App() {
           <button className="header__button">Sign in</button>
           <button className="header__button">Sign up</button>
         </header>
-        <ArticleList />
+        <ErrorBlock>
+          <ArticleList />
+        </ErrorBlock>
         <Pagination
           defaultCurrent={1}
           current={currentPage}

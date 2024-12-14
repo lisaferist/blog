@@ -52,4 +52,4 @@ const articlesSlice = createSlice({
 
 export default articlesSlice.reducer
 
-export const { changeCurrentPage } = articlesSlice.actions
+export const { changeCurrentPage, setError } = articlesSlice.actions

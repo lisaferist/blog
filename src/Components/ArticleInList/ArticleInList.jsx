@@ -3,7 +3,7 @@ import './Article.scss'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 
-export default function Article({ articleObj }) {
+export default function ArticleInList({ articleObj }) {
   let tags = null
   if (articleObj.tags) {
     tags = articleObj.tags.map((tag) => (
