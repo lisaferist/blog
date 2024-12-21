@@ -1,13 +1,16 @@
 async function getArticle(slug) {
-  const optionsObj = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+  if (slug) {
+    const optionsObj = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    const response = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}`, optionsObj)
+    const body = await response.json()
+    return body.article
   }
-  const response = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}`, optionsObj)
-  const body = await response.json()
-  return body
+  throw new Error('No slug!')
 }
 // {
 //   "article": {
@@ -32,4 +35,4 @@ async function getArticle(slug) {
 // }
 // }
 
-export default getArticle()
+export default getArticle

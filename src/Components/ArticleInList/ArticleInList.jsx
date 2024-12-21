@@ -1,35 +1,40 @@
 import React from 'react'
-import './Article.scss'
+import './ArticleInList.scss'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 
-export default function ArticleInList({ articleObj }) {
-  let tags = null
+export const editTags = (articleObj) => {
   if (articleObj.tags) {
-    tags = articleObj.tags.map((tag) => (
+    return articleObj.tags.map((tag) => (
       <li className="article__tag" key={`${articleObj.slug}_${tag}`}>
         {tag}
       </li>
     ))
   }
-  const avatar = articleObj.author.image ? (
+  return null
+}
+export const editAvatar = (articleObj) =>
+  articleObj.author.image ? (
     <img className="article__user-avatar" alt="avatar" src={articleObj.author.image} />
   ) : (
     <div className="article__user-avatar article__user-avatar--no-avatar" />
   )
 
-  function editOverview(text) {
-    const maxOverviewLength = 13
-    if (text.length > maxOverviewLength + 2) {
-      let newText = text.substring(0, maxOverviewLength)
-      newText = `${newText.replace(/\s+\S*$/, '')}...`
-      return newText
-    }
-    return text
+export function editOverview(text) {
+  const maxOverviewLength = 13
+  if (text.length > maxOverviewLength + 2) {
+    let newText = text.substring(0, maxOverviewLength)
+    newText = `${newText.replace(/\s+\S*$/, '')}...`
+    return newText
   }
+  return text
+}
 
+export default function ArticleInList({ articleObj }) {
+  const tags = editTags(articleObj)
+  const avatar = editAvatar(articleObj)
   return (
-    <li className="article-list__article article">
+    <div className="article-list__article article">
       <div className="article__header">
         <div>
           <h4 className="article__title">{articleObj.title}</h4>
@@ -48,6 +53,6 @@ export default function ArticleInList({ articleObj }) {
         </div>
       </div>
       <p className="article__text">{articleObj.body}</p>
-    </li>
+    </div>
   )
 }
