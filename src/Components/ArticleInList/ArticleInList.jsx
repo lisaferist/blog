@@ -3,11 +3,20 @@ import './ArticleInList.scss'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 
+export function editOverview(text, maxOverviewLength = 13) {
+  if (text.length > maxOverviewLength + 2) {
+    let newText = text.substring(0, maxOverviewLength)
+    newText = `${newText.replace(/\s+\S*$/, '')}...`
+    return newText
+  }
+  return text
+}
+
 export const editTags = (articleObj) => {
   if (articleObj.tags) {
     return articleObj.tags.map((tag) => (
       <li className="article__tag" key={`${articleObj.slug}_${tag}`}>
-        {tag}
+        {editOverview(tag, 20)}
       </li>
     ))
   }
@@ -20,16 +29,6 @@ export const editAvatar = (articleObj) =>
     <div className="article__user-avatar article__user-avatar--no-avatar" />
   )
 
-export function editOverview(text) {
-  const maxOverviewLength = 13
-  if (text.length > maxOverviewLength + 2) {
-    let newText = text.substring(0, maxOverviewLength)
-    newText = `${newText.replace(/\s+\S*$/, '')}...`
-    return newText
-  }
-  return text
-}
-
 export default function ArticleInList({ articleObj }) {
   const tags = editTags(articleObj)
   const avatar = editAvatar(articleObj)
@@ -37,7 +36,7 @@ export default function ArticleInList({ articleObj }) {
     <div className="article-list__article article">
       <div className="article__header">
         <div>
-          <h4 className="article__title">{articleObj.title}</h4>
+          <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
           <button className="article__like">
             <span className="article__like-icon"> </span>
             {articleObj.favoritesCount}
@@ -52,7 +51,7 @@ export default function ArticleInList({ articleObj }) {
           </p>
         </div>
       </div>
-      <p className="article__text">{articleObj.body}</p>
+      <p className="article__text">{articleObj.description}</p>
     </div>
   )
 }

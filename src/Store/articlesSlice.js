@@ -11,39 +11,22 @@ export const fetchArticleList = createAsyncThunk('articles/fetchArticleList', as
   const data = offset !== 0 ? await getArticleList(offset) : await getArticleList()
   return data
 })
-
-export const fetchArticle = createAsyncThunk('articles/fetchArticleList', async (arg) => {
-  console.log('UUUUUUUUUUU')
-  const { slug } = arg
-  const data = await getArticle(slug)
+export const fetchArticleWithSlug = createAsyncThunk('articles/fetchArticleWithSlug', async (arg) => {
+  const data = await getArticle(arg)
   return data
 })
+
 const articlesSlice = createSlice({
   name: 'articles',
   initialState: {
     articleList: {},
     articlesCount: null,
     currentPage: 1,
-    currentArticleObject: {
-      slug: 'how-to-train-your-dragon',
-      title: 'How to train your dragon',
-      description: 'Ever wonder how?',
-      body: 'It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a JacobianIt takes a JacobianIt It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a JacobianIt takes a JacobianIt It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a JacobianIt takes a JacobianIt It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a JacobianIt takes a JacobianIt  takes a JacobianIt takes a JacobianIt takes a JacobianIt takes a Jacobian It takes a Jacobian It  It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a JacobianIt takes a JacobianIt takes a JacobianIt takes a JacobianIt takes a JacobianIt takes a Jacobian It takes a Jacobian It  It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian It takes a Jacobian takes a Jacobian It takes a Jacobian It takes a Jacobian',
-      tags: ['dragons', 'training'],
-      createdAt: '2023-05-04T09:42:00+00:00',
-      updatedAt: '2023-05-04T09:42:00+00:00',
-      favorited: false,
-      favoritesCount: 42,
-      author: {
-        username: 'jake',
-        bio: 'I work at State Farm.',
-        image: 'https://api.realworld.io/images/smiley-cyrus.jpg',
-        following: false,
-      },
-    },
+    currentArticleObject: null,
     error: null,
     errorMessage: null,
-    status: null,
+    listStatus: null,
+    articleStatus: null,
     token: null,
     totalPageCount: null,
   },
@@ -52,43 +35,44 @@ const articlesSlice = createSlice({
       state.currentPage = action.payload.page
       state.articleList = { ...state.articleList, [state.currentPage]: null }
     },
+    changeCurrentArticle(state, action) {
+      state.currentArticleObject = action.payload.article
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchArticleList.pending, (state) => {
-        if (state.status === null) {
-          state.status = 'pending'
-        }
+        state.listStatus = 'pending'
         state.error = null
+        state.errorMessage = null
       })
       .addCase(fetchArticleList.fulfilled, (state, action) => {
         const body = action.payload
         state.articleList = { ...state.articleList, [state.currentPage]: body.articles }
         state.articlesCount = body.articlesCount
-        state.status = 'fulfilled'
+        state.listStatus = 'fulfilled'
         state.totalPageCount = Math.ceil(body.articlesCount / 20)
       })
       .addCase(fetchArticleList.rejected, (state, action) => {
         state.error = true
         state.errorMessage = action.payload.errors.body.join('; ')
       })
-    // .addCase(fetchArticle.pending, (state) => {
-    //   if (state.status === null) {
-    //     state.status = 'pending'
-    //   }
-    //   state.error = null
-    // })
-    // .addCase(fetchArticle.fulfilled, (state, action) => {
-    //   state.currentArticleObject = action.payload
-    //   state.status = 'fulfilled'
-    // })
-    // .addCase(fetchArticle.rejected, (state, action) => {
-    //   state.error = true
-    //   state.errorMessage = action.payload.errors.body.join('; ')
-    // })
+      .addCase(fetchArticleWithSlug.pending, (state) => {
+        state.articleStatus = 'pending'
+        state.error = null
+        state.errorMessage = null
+      })
+      .addCase(fetchArticleWithSlug.fulfilled, (state, action) => {
+        state.currentArticleObject = action.payload
+        state.articleStatus = 'fulfilled'
+      })
+      .addCase(fetchArticleWithSlug.rejected, (state, action) => {
+        state.error = true
+        state.errorMessage = action.payload.errors.body.join('; ')
+      })
   },
 })
 
 export default articlesSlice.reducer
 
-export const { changeCurrentPage, setError } = articlesSlice.actions
+export const { changeCurrentPage, changeCurrentArticle } = articlesSlice.actions

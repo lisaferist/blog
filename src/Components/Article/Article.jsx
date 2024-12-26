@@ -2,13 +2,19 @@ import React from 'react'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 import { useSelector } from 'react-redux'
+import Markdown from 'markdown-to-jsx'
 
 import { editAvatar, editOverview, editTags } from '../ArticleInList/ArticleInList'
 
 import styleClasses from './Article.module.scss'
 
-export default function Article() {
+export default function Article({ slug }) {
   const articleObj = useSelector((state) => state.articles.currentArticleObject)
+
+  if (!articleObj) {
+    return <p>No article here ;(</p>
+  }
+
   const tags = editTags(articleObj)
   const avatar = editAvatar(articleObj)
 
@@ -16,7 +22,7 @@ export default function Article() {
     <div className={`article ${styleClasses.article}`}>
       <div className="article__header">
         <div>
-          <h4 className="article__title">{articleObj.title}</h4>
+          <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
           <button className="article__like">
             <span className="article__like-icon"> </span>
             {articleObj.favoritesCount}
@@ -32,8 +38,10 @@ export default function Article() {
         </div>
       </div>
       <div>
-        <p className={styleClasses.article__description}>{articleObj.description}</p>
-        <p className={styleClasses.article__text}>{articleObj.body}</p>
+        <p className={styleClasses.article__description}>{editOverview(articleObj.description, 105)}</p>
+        <p className={styleClasses.article__text}>
+          <Markdown>{articleObj.body}</Markdown>
+        </p>
       </div>
     </div>
   )

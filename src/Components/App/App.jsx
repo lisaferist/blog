@@ -44,7 +44,7 @@ function App() {
             <button className="header__button">Sign up</button>
           </header>
           <ErrorBlock>
-            <Route path="/articles/slug" component={Article} />
+            <Route path="/articles/:slug" render={({ match }) => <Article slug={match.params.slug} />} exact />
             <Route path="/articles" component={ArticleList} exact />
             <Route path="/" component={ArticleList} exact />
           </ErrorBlock>

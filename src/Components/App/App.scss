@@ -4,6 +4,7 @@ html {
   box-sizing: border-box;
 }
 *, *:before, *:after {
+  text-decoration: inherit;
   box-sizing: inherit;
   font-family: inherit;
 }
