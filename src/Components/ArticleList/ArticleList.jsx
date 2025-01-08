@@ -34,7 +34,7 @@ export default function ArticleList() {
             dispatch(changeCurrentArticle({ article: articleObj }))
           }}
         >
-          <Link to="/articles/slug">
+          <Link to={`/articles/${articleObj.slug}`}>
             <ErrorBlock>
               <ArticleInList articleObj={articleObj} />
             </ErrorBlock>

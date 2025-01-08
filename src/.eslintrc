@@ -76,6 +76,7 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
     "react/button-has-type": "off",
+    "react/no-unescaped-entities": ["error", {"forbid": [">", "}"]}],
     "react/state-in-constructor": "off",
     "react/prop-types": 0,
     "react-hooks/rules-of-hooks": "error",

@@ -1,0 +1,31 @@
+@import '../../style';
+
+.profile-header {
+  display: grid;
+  grid-template-columns: 1fr 120px 160px 110px !important;
+  grid-gap: 25px;
+
+  .profile-header__user-info {
+    width: max-content;
+    height: 46px;
+    display: flex;
+    justify-content: space-between;
+
+    .profile-header__username {
+      min-width: 90px;
+      max-width: 110px;
+      margin: 0;
+    }
+    .profile-header__user-avatar {
+      width: 46px;
+      height: 46px;
+    }
+  }
+  .profile-header__button--width {
+    width: 120px !important;
+  }
+  .profile-header__button--bordered {
+    border-radius: 5px;
+    border: 1px solid black !important;
+  }
+}

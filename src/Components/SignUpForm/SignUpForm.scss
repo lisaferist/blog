@@ -1,1 +1,103 @@
 @import "../../style";
+
+.form-wrapper {
+  height: max-content;
+  width: 385px;
+
+  margin-top: 60px;
+  padding: 48px 32px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: white;
+  border: $border-grey 1px solid;
+  border-radius: 6px;
+  box-shadow: 0 0 15px 0 $border-grey;
+
+  font-family: 'Roboto-Regular', sans-serif;
+
+  .form__title {
+    font-size: 22px;
+    font-family: 'Roboto', sans-serif;
+    margin: 0 0 21px 0;
+  }
+  .form {
+    height: max-content;
+
+    display: flex;
+    flex-direction: column;
+
+    .form__input-label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 14px;
+
+      .form__input {
+        display: block;
+        width: 320px;
+        height: 40px;
+
+        margin-top: 5px;
+        padding-left: 10px;
+
+        font-size: 16px;
+
+        border: $border-grey 1px solid;
+        border-radius: 5px;
+      }
+      .form__input::placeholder {
+        color: $border-grey;
+      }
+
+      .form__input--border-red {
+        border-color: $red;
+      }
+    }
+
+    .form__checkbox-label {
+      margin-top: 21px;
+      border-top: $border-grey 1px solid;
+      padding-top: 7px;
+      display: flex;
+      align-items: flex-start;
+
+      .form__checkbox-text {
+        color: $grey;
+        font-size: 14px;
+      }
+    }
+    .form__input-error {
+       margin-top: 5px;
+       .form__input-error-message {
+         margin: 0;
+         color: $red;
+         font-size: 14px;
+       }
+     }
+
+    .form__submit-button {
+      margin-top: 21px;
+      width: 320px;
+      height: 40px;
+
+      color: white;
+      font-size: 16px;
+
+      background-color: $blue;
+      border: none;
+      border-radius: 5px;
+    }
+  }
+
+  .form__footer {
+    color: $grey;
+    font-size: 12px;
+    margin-top: 10px;
+
+    .form__footer-link {
+      color: $blue;
+    }
+  }
+}

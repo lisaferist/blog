@@ -3,13 +3,16 @@ import './ArticleInList.scss'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 
-export function editOverview(text, maxOverviewLength = 13) {
-  if (text.length > maxOverviewLength + 2) {
-    let newText = text.substring(0, maxOverviewLength)
-    newText = `${newText.replace(/\s+\S*$/, '')}...`
-    return newText
+export function editOverview(text, maxOverviewLength = 13, isShouldSpace = false) {
+  if (!isShouldSpace || text.slice(0, Math.round(maxOverviewLength / 2) + 2).includes(' ')) {
+    if (text.length > maxOverviewLength + 2) {
+      let newText = text.substring(0, maxOverviewLength)
+      newText = `${newText.replace(/\s+\S*$/, '')}...`
+      return newText
+    }
+    return text
   }
-  return text
+  return `${text.slice(0, Math.floor(maxOverviewLength / 2) + 2)}...`
 }
 
 export const editTags = (articleObj) => {
