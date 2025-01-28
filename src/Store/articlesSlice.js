@@ -79,7 +79,7 @@ const articlesSlice = createSlice({
           state.errorObject = dataObj.errors
         }
         if (dataObj.article) {
-          state.currentArticleObject = action.payload
+          state.currentArticleObject = action.payload.article
           state.articleStatus = 'fulfilled'
         }
       })

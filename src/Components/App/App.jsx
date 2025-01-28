@@ -14,6 +14,7 @@ import Profile from '../Profile'
 import { editOverview } from '../ArticleInList/ArticleInList'
 import { getUserByToken, logOut } from '../../Store/userSlice'
 import NewArticle from '../NewArticle'
+import ArticleForm from '../ArticleForm'
 
 function App() {
   const articleList = useSelector((state) => state.articles.articleList)
@@ -103,6 +104,11 @@ function App() {
             <Route path="/sign-in" component={SignInForm} exact />
             <Route path="/profile" component={Profile} exact />
             <Route path="/new-article" component={NewArticle} exact />
+            <Route
+              path="/articles/:slug/edit"
+              render={({ match }) => <ArticleForm slug={match.params.slug} type="edit" />}
+              exact
+            />
           </ErrorBlock>
         </div>
       </ConfigProvider>

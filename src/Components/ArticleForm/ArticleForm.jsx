@@ -2,34 +2,21 @@ import React, { useEffect, useState } from 'react'
 import './ArticleForm.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
+import { ScaleLoader } from 'react-spinners'
 
 import { fetchArticleWithSlug } from '../../Store/articlesSlice'
 
-export default function ArticleForm({ type = 'edit', slug = 'r' }) {
-  const dispatch = useDispatch()
+function ArticleFormContent({ articleObj, type }) {
   const errorObject = useSelector((state) => state.articles.errorObject)
-  const status = useSelector((state) => state.articles.articleStatus)
-  // const articleObj = useSelector((state) => state.articles.currentArticleObject)
-  const articleObj = {
-    title: 'Article title',
-    slug: 'article-slug',
-    description: 'Article description',
-    body: 'Article big text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text',
-    tags: ['one', 'two', 'three', 'for', 'five'],
-  }
 
-  useEffect(() => {
-    if (type === 'edit' && slug && (!articleObj || articleObj.slug !== slug)) {
-      dispatch(fetchArticleWithSlug(slug))
-    }
-  }, [slug, articleObj, type])
-  if (type === 'edit' && !slug) {
-    throw new Error('Slug is required!')
-  }
+  let title
+  if (type === 'edit') {
+    title = 'Edit article'
+  } else title = 'Create new article'
 
   /* eslint-disable */
   const [tagsObj, setTagsObj] = useState(
-    articleObj && articleObj.tags
+    type === 'edit' && articleObj && articleObj.tags
       ? {
         maxId: articleObj.tags.length,
         tag0: '',
@@ -38,7 +25,11 @@ export default function ArticleForm({ type = 'edit', slug = 'r' }) {
           tag,
         })),
       }
-      : null
+      : {
+        maxId: 1,
+        tag0: '',
+        tagsArray: [{ id: 1, tag: '' }],
+      }
   )
   /* eslint-enable */
   const tagsArrayToDefaultValueObject = (obj) => {
@@ -64,63 +55,52 @@ export default function ArticleForm({ type = 'edit', slug = 'r' }) {
     formState: { errors },
   } = useForm({
     mode: 'onBlur',
-    // defaultValues: type === 'edit' ? defaultValues : null,
-    defaultValues,
+    defaultValues: type === 'edit' ? defaultValues : null,
   })
 
-  const tagsToInputs = (tagsObject) => {
-    if (tagsObject && tagsObject.tagsArray) {
-      return tagsObject.tagsArray.map((tag) => {
-        const deleteOnclick = (e) => {
-          e.preventDefault()
-          const { id } = e.target
-          setTagsObj((stateObj) => {
-            const tagsArray = stateObj.tagsArray.filter((t) => t.id.toString() !== id)
-            return { ...stateObj, tagsArray }
-          })
-        }
-        const onTagChange = (e) => {
-          setTagsObj((stateObj) => {
-            const { tagsArray } = stateObj
-            const editedTag = tagsArray.filter((t) => t.id === tag.id)[0]
-            const editedTagIndex = tagsArray.indexOf(editedTag)
-            const newTagsArray = [
-              ...tagsArray.slice(0, editedTagIndex),
-              { id: tag.id, tag: e.target.value },
-              ...tagsArray.slice(editedTagIndex + 1),
-            ]
-            return { ...stateObj, tagsArray: newTagsArray }
-          })
-        }
-        return (
-          <div className="article-form__tag-input-wrapper form__tag-input-wrapper" key={`tag${tag.id}`}>
-            <input
-              className="form__input article-form__input article-form__input--tag"
-              {...register(`tag${tag.id}`)}
-              placeholder="Tag"
-              value={tag.tag}
-              onChange={onTagChange}
-            />
-            <button
-              className="article-form__button form__button article-form__button--delete"
-              id={tag.id}
-              onClick={deleteOnclick}
-            >
-              Delete
-            </button>
-          </div>
-        )
-      })
-    }
-    return null
-  }
+  const tagsToInputs = (tagsObject) =>
+    tagsObject.tagsArray.map((tag) => {
+      const deleteOnclick = (e) => {
+        e.preventDefault()
+        const { id } = e.target
+        setTagsObj((stateObj) => {
+          const tagsArray = stateObj.tagsArray.filter((t) => t.id.toString() !== id)
+          return { ...stateObj, tagsArray }
+        })
+      }
+      const onTagChange = (e) => {
+        setTagsObj((stateObj) => {
+          const { tagsArray } = stateObj
+          const editedTag = tagsArray.filter((t) => t.id === tag.id)[0]
+          const editedTagIndex = tagsArray.indexOf(editedTag)
+          const newTagsArray = [
+            ...tagsArray.slice(0, editedTagIndex),
+            { id: tag.id, tag: e.target.value },
+            ...tagsArray.slice(editedTagIndex + 1),
+          ]
+          return { ...stateObj, tagsArray: newTagsArray }
+        })
+      }
 
-  let title
-  if (type === 'new') {
-    title = 'Create new article'
-  } else if (type === 'edit') {
-    title = 'Edit article'
-  }
+      return (
+        <div className="article-form__tag-input-wrapper form__tag-input-wrapper" key={`tag${tag.id}`}>
+          <input
+            className="form__input article-form__input article-form__input--tag"
+            {...register(`tag${tag.id}`)}
+            placeholder="Tag"
+            value={tag.tag}
+            onChange={onTagChange}
+          />
+          <button
+            className="article-form__button form__button article-form__button--delete"
+            id={tag.id}
+            onClick={deleteOnclick}
+          >
+            Delete
+          </button>
+        </div>
+      )
+    })
 
   const addTagOnclick = (e) => {
     e.preventDefault()
@@ -130,11 +110,11 @@ export default function ArticleForm({ type = 'edit', slug = 'r' }) {
       return { ...stateObj, tagsArray, maxId: stateObj.maxId + 1 }
     })
   }
-  const tags = type === 'edit' ? tagsToInputs(tagsObj) : <input />
+  const tags = tagsToInputs(tagsObj)
 
   return (
     <div className="form-wrapper article-form">
-      <h2 className="form__title">title: {title}</h2>
+      <h2 className="form__title">{title}</h2>
       <form
         className="form"
         onSubmit={handleSubmit((data) => {
@@ -194,7 +174,9 @@ export default function ArticleForm({ type = 'edit', slug = 'r' }) {
               className="form__input article-form__input article-form__input--tag"
               {...register('tag0')}
               placeholder="Tag"
-              onChange={null}
+              onChange={(e) => {
+                setTagsObj((stateObj) => ({ ...stateObj, tag0: e.target.value }))
+              }}
               value={tagsObj.tag0}
             />
             <button
@@ -224,4 +206,40 @@ export default function ArticleForm({ type = 'edit', slug = 'r' }) {
       </form>
     </div>
   )
+}
+export default function ArticleForm({ type, slug }) {
+  const dispatch = useDispatch()
+  const status = useSelector((state) => state.articles.articleStatus)
+  const error = useSelector((state) => state.articles.error)
+  const errorMessage = useSelector((state) => state.articles.errorMessage)
+  const articleObj = useSelector((state) => state.articles.currentArticleObject)
+  // const articleObj = {
+  //   title: 'Article title',
+  //   slug: 'article-slug',
+  //   description: 'Article description',
+  //   body: 'Article big text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text',
+  //   // tags: ['one', 'two', 'three', 'for', 'five'],
+  // }
+
+  if (type === 'edit' && !slug) {
+    throw new Error('Slug is required!')
+  }
+  useEffect(() => {
+    if (type === 'edit' && slug && (!articleObj || articleObj.slug !== slug)) {
+      dispatch(fetchArticleWithSlug(slug))
+    }
+  }, [slug])
+  if (error && errorMessage) {
+    throw new Error(errorMessage)
+  }
+  if (type === 'edit' && (!articleObj || status === 'pending')) {
+    return (
+      <div className="spin">
+        <ScaleLoader color="#1890ff" />
+      </div>
+    )
+  }
+
+  /* eslint-disable */
+  return <ArticleFormContent articleObj={articleObj} type={type}/>
 }
