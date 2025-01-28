@@ -5,16 +5,26 @@ async function loginExistingUser(userObj) {
   //     "password": "string"
   //   }
   // }
+  const bodyObj = JSON.stringify(userObj)
   const optionsObj = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(userObj),
+    body: bodyObj,
   }
   const response = await fetch('https://blog-platform.kata.academy/api/users/login', optionsObj)
   const body = await response.json()
-  return body.user
+  // {
+  //   "user": {
+  //   "email": "jake@jake.jake",
+  //   "token": "jwt.token.here",
+  //   "username": "jake",
+  //   "bio": "I work at State Farm.",
+  //   "image": null
+  //   }
+  // }
+  return body
 }
 
 export default loginExistingUser

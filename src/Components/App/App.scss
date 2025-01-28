@@ -28,6 +28,48 @@ body {
     flex-direction: column;
     align-items: center;
 
+    .registered-header {
+      display: grid;
+      grid-template-columns: 1fr 120px 160px 110px;
+      grid-gap: 25px;
+
+      .registered-header__user-info {
+        width: max-content;
+        height: 46px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .registered-header__username {
+          min-width: 90px;
+          max-width: 110px;
+          padding-right: 10px;
+          margin: 0;
+        }
+        .registered-header__user-avatar {
+          width: 46px;
+          height: 46px;
+          border-radius: 50%;
+        }
+      }
+      .registered-header__button--width {
+        width: 120px;
+      }
+      .registered-header__button--bordered {
+        border-radius: 5px;
+        border: 1px solid black;
+      }
+    }
+
+    .unregistered-header {
+      grid-template-columns: 1fr 110px 110px;
+
+      .unregistered-header__button {
+        width: 110px;
+        border: none;
+      }
+    }
+
     .header {
       text-decoration: none;
 
@@ -39,7 +81,6 @@ body {
       padding: 15px 22px;
 
       display: grid;
-      grid-template-columns: 1fr 110px 110px;
       grid-gap: 25px;
 
       .header__title {
@@ -51,9 +92,7 @@ body {
 
       .header__button {
         height: 50px;
-        width: 110px;
 
-        border: none;
         font-size: 18px;
         background-color: inherit;
 
@@ -65,5 +104,9 @@ body {
         border-radius: 5px;
       }
     }
+    .ant-pagination-options {
+      display: none !important;
+    }
+
   }
 }

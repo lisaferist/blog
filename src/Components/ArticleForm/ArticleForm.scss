@@ -1,0 +1,38 @@
+@import "../../style";
+.article-form.form-wrapper {
+  width: 938px;
+
+  .form__input-label {
+    .article-form__input.form__input {
+      width: 874px;
+    }
+    .article-form__input.form__input.article-form__input--text-area {
+      height: 168px;
+    }
+    .article-form__tag-input-wrapper{
+      display: flex;
+      align-items: flex-end;
+
+      .article-form__input.form__input.article-form__input--tag {
+        width: 300px;
+        margin-right: 18px;
+      }
+
+      .article-form__button.form__button {
+        background-color: inherit;
+        border: $blue 1px solid;
+        border-radius: 5px;
+        color: $blue;
+        width: 136px;
+        height: 40px;
+      }
+
+      .article-form__button.form__button.article-form__button--delete {
+        border-color: $red;
+        color: $red;
+        margin-right: 18px;
+        width: 120px;
+      }
+    }
+  }
+}

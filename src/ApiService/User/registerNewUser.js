@@ -1,31 +1,15 @@
 async function registerNewUser(userObj) {
-  // {
-  //   "user": {
-  //     "username": "string",
-  //     "email": "string",
-  //     "password": "string"
-  //   }
-  // }
+  const bodyObj = JSON.stringify(userObj)
   const optionsObj = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(userObj),
+    body: bodyObj,
   }
   const response = await fetch('https://blog-platform.kata.academy/api/users', optionsObj)
   const body = await response.json()
-  return body.user
+  return body
 }
-
-// {
-//   "user": {
-//   "email": "jake@jake.jake",
-//     "token": "jwt.token.here",
-//     "username": "jake",
-//     "bio": "I work at State Farm.",
-//     "image": null
-//    }
-// }
 
 export default registerNewUser

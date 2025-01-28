@@ -1,21 +1,23 @@
 async function updateCurrentUser(userObj) {
+  const token = localStorage.getItem('token')
   // {
   //   "email": "jake@jake.jake",
   //   "username": "jake",
   //   "bio": "I work at State Farm.",
   //   "image": null
   // }
+  const bodyObj = JSON.stringify({ user: userObj })
   const optionsObj = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'TOKEN',
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(userObj),
+    body: bodyObj,
   }
   const response = await fetch('https://blog-platform.kata.academy/api/user', optionsObj)
   const body = await response.json()
-  return body.user
+  return body
 }
 // {
 //   "user": {

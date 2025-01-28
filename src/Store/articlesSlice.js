@@ -25,6 +25,7 @@ const articlesSlice = createSlice({
     currentArticleObject: null,
     error: null,
     errorMessage: null,
+    errorObject: null,
     listStatus: null,
     articleStatus: null,
     token: null,
@@ -45,30 +46,46 @@ const articlesSlice = createSlice({
         state.listStatus = 'pending'
         state.error = null
         state.errorMessage = null
+        state.errorObject = null
       })
       .addCase(fetchArticleList.fulfilled, (state, action) => {
-        const body = action.payload
-        state.articleList = { ...state.articleList, [state.currentPage]: body.articles }
-        state.articlesCount = body.articlesCount
-        state.listStatus = 'fulfilled'
-        state.totalPageCount = Math.ceil(body.articlesCount / 20)
+        const dataObj = action.payload
+        if (dataObj.errors) {
+          state.error = true
+          state.errorObject = dataObj.errors
+        }
+        if (dataObj.articles) {
+          state.articleList = { ...state.articleList, [state.currentPage]: dataObj.articles }
+          state.articlesCount = dataObj.articlesCount
+          state.listStatus = 'fulfilled'
+          state.totalPageCount = Math.ceil(dataObj.articlesCount / 20)
+        }
       })
       .addCase(fetchArticleList.rejected, (state, action) => {
         state.error = true
-        state.errorMessage = action.payload.errors.body.join('; ')
+        state.errorMessage = action.error.message
       })
+
       .addCase(fetchArticleWithSlug.pending, (state) => {
         state.articleStatus = 'pending'
         state.error = null
         state.errorMessage = null
+        state.errorObject = null
       })
       .addCase(fetchArticleWithSlug.fulfilled, (state, action) => {
-        state.currentArticleObject = action.payload
-        state.articleStatus = 'fulfilled'
+        const dataObj = action.payload
+        if (dataObj.errors) {
+          state.error = true
+          state.errorObject = dataObj.errors
+        }
+        if (dataObj.article) {
+          state.currentArticleObject = action.payload
+          state.articleStatus = 'fulfilled'
+        }
       })
       .addCase(fetchArticleWithSlug.rejected, (state, action) => {
         state.error = true
-        state.errorMessage = action.payload.errors.body.join('; ')
+        state.errorMessage = action.error.message
       })
   },
 })

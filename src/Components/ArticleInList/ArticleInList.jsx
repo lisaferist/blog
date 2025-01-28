@@ -12,6 +12,9 @@ export function editOverview(text, maxOverviewLength = 13, isShouldSpace = false
     }
     return text
   }
+  if (isShouldSpace && text.length < Math.round(maxOverviewLength / 2) + 2) {
+    return text
+  }
   return `${text.slice(0, Math.floor(maxOverviewLength / 2) + 2)}...`
 }
 

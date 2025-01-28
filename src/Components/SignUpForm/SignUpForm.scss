@@ -98,6 +98,14 @@
 
     .form__footer-link {
       color: $blue;
+
+      button {
+        border: none;
+        font-size: inherit;
+        font-family: inherit;
+        color: inherit;
+        background-color: inherit;
+      }
     }
   }
 }
