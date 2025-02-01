@@ -7,8 +7,10 @@ async function getArticle(slug) {
       },
     }
     const response = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}`, optionsObj)
-    const body = await response.json()
-    return body
+    if (response.ok) {
+      const body = await response.json()
+      return body
+    }
   }
   throw new Error('No slug!')
 }

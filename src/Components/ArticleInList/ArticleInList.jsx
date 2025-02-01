@@ -19,12 +19,18 @@ export function editOverview(text, maxOverviewLength = 13, isShouldSpace = false
 }
 
 export const editTags = (articleObj) => {
-  if (articleObj.tags) {
-    return articleObj.tags.map((tag) => (
-      <li className="article__tag" key={`${articleObj.slug}_${tag}`}>
-        {editOverview(tag, 20)}
-      </li>
-    ))
+  if (articleObj.tagList) {
+    return articleObj.tagList.map((tag, index, array) => {
+      let key = `${articleObj.slug}_${tag}`
+      if (array.filter((el) => el === tag).length > 1) {
+        key = `${articleObj.slug}_${index}${tag}`
+      }
+      return (
+        <li className="article__tag" key={key}>
+          {editOverview(tag, 20)}
+        </li>
+      )
+    })
   }
   return null
 }

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment } from 'react'
 import './ArticleList.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -6,7 +6,7 @@ import { ScaleLoader } from 'react-spinners'
 import { Pagination } from 'antd'
 
 import ArticleInList from '../ArticleInList'
-import { changeCurrentArticle, changeCurrentPage, fetchArticleList } from '../../Store/articlesSlice'
+import { changeCurrentArticle, changeCurrentPage } from '../../Store/articlesSlice'
 import ErrorBlock from '../HOCs/ErrorBlock'
 
 export default function ArticleList() {
@@ -16,10 +16,6 @@ export default function ArticleList() {
   const articlesOnCurrentPage = articleList[currentPage]
   const status = useSelector((state) => state.articles.listStatus)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(fetchArticleList())
-  }, [dispatch])
 
   const content =
     !articlesOnCurrentPage || status === 'pending' ? (

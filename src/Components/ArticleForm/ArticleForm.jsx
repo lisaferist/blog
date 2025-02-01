@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { ScaleLoader } from 'react-spinners'
 
-import { fetchArticleWithSlug } from '../../Store/articlesSlice'
+import { createNewArticle, editArticle, fetchArticleWithSlug } from '../../Store/articlesSlice'
 
-function ArticleFormContent({ articleObj, type }) {
+function ArticleFormContent({ articleObj, type = 'create' }) {
   const errorObject = useSelector((state) => state.articles.errorObject)
+  const dispatch = useDispatch()
 
   let title
   if (type === 'edit') {
@@ -118,7 +119,27 @@ function ArticleFormContent({ articleObj, type }) {
       <form
         className="form"
         onSubmit={handleSubmit((data) => {
-          console.log(data)
+          const tagsKeys = Object.keys(data).filter((key) => key.includes('tag'))
+          const tagsArray = []
+          tagsKeys.forEach((key) => {
+            if (data[key] && data[key] !== '') {
+              tagsArray.push(data[key])
+            }
+          })
+          const argObj = {
+            article: {
+              title: data.title,
+              description: data.description,
+              body: data.body,
+              tagList: tagsArray,
+            },
+          }
+          if (type === 'create') {
+            dispatch(createNewArticle(argObj))
+          }
+          if (type === 'edit') {
+            dispatch(editArticle({ articleObject: argObj, slug: articleObj.slug }))
+          }
         })}
       >
         <label className="form__input-label">
@@ -213,17 +234,12 @@ export default function ArticleForm({ type, slug }) {
   const error = useSelector((state) => state.articles.error)
   const errorMessage = useSelector((state) => state.articles.errorMessage)
   const articleObj = useSelector((state) => state.articles.currentArticleObject)
-  // const articleObj = {
-  //   title: 'Article title',
-  //   slug: 'article-slug',
-  //   description: 'Article description',
-  //   body: 'Article big text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text',
-  //   // tags: ['one', 'two', 'three', 'for', 'five'],
-  // }
+  const currentUser = useSelector((state) => state.user.userObject)
 
   if (type === 'edit' && !slug) {
     throw new Error('Slug is required!')
   }
+
   useEffect(() => {
     if (type === 'edit' && slug && (!articleObj || articleObj.slug !== slug)) {
       dispatch(fetchArticleWithSlug(slug))
@@ -232,6 +248,14 @@ export default function ArticleForm({ type, slug }) {
   if (error && errorMessage) {
     throw new Error(errorMessage)
   }
+  if (
+    type === 'edit' &&
+    articleObj &&
+    slug === articleObj.slug &&
+    currentUser.username !== articleObj.author.username
+  ) {
+    throw new Error('This is not your article, you can not edit it.')
+  }
   if (type === 'edit' && (!articleObj || status === 'pending')) {
     return (
       <div className="spin">
@@ -239,7 +263,5 @@ export default function ArticleForm({ type, slug }) {
       </div>
     )
   }
-
-  /* eslint-disable */
-  return <ArticleFormContent articleObj={articleObj} type={type}/>
+  return <ArticleFormContent articleObj={articleObj} type={type} />
 }

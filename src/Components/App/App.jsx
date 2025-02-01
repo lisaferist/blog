@@ -13,7 +13,6 @@ import SignInForm from '../SignInForm'
 import Profile from '../Profile'
 import { editOverview } from '../ArticleInList/ArticleInList'
 import { getUserByToken, logOut } from '../../Store/userSlice'
-import NewArticle from '../NewArticle'
 import ArticleForm from '../ArticleForm'
 
 function App() {
@@ -103,7 +102,7 @@ function App() {
             <Route path="/sign-up" component={SignUpForm} exact />
             <Route path="/sign-in" component={SignInForm} exact />
             <Route path="/profile" component={Profile} exact />
-            <Route path="/new-article" component={NewArticle} exact />
+            <Route path="/new-article" component={ArticleForm} exact />
             <Route
               path="/articles/:slug/edit"
               render={({ match }) => <ArticleForm slug={match.params.slug} type="edit" />}

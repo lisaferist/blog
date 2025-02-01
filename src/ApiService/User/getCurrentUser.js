@@ -9,9 +9,6 @@ async function getCurrentUser() {
   }
   const response = await fetch('https://blog-platform.kata.academy/api/user', optionsObj)
   const body = await response.json()
-  if (!response.ok) {
-    throw new Error(JSON.stringify(body.errors))
-  }
   return body
 }
 // {

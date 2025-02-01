@@ -4,6 +4,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import getArticleList from '../ApiService/Articles/getArticleList'
 import getArticle from '../ApiService/Articles/getArticle'
+import postArticle from '../ApiService/Articles/postArticle'
+import updateArticle from '../ApiService/Articles/updateArticle'
 
 export const fetchArticleList = createAsyncThunk('articles/fetchArticleList', async (arg, thunkAPI) => {
   const state = thunkAPI.getState()
@@ -15,7 +17,15 @@ export const fetchArticleWithSlug = createAsyncThunk('articles/fetchArticleWithS
   const data = await getArticle(arg)
   return data
 })
-
+export const editArticle = createAsyncThunk('articles/editArticle', async (arg) => {
+  const { articleObject, slug } = arg
+  const data = await updateArticle(articleObject, slug)
+  return data
+})
+export const createNewArticle = createAsyncThunk('articles/createNewArticle', async (arg) => {
+  const data = await postArticle(arg)
+  return data
+})
 const articlesSlice = createSlice({
   name: 'articles',
   initialState: {
@@ -30,6 +40,7 @@ const articlesSlice = createSlice({
     articleStatus: null,
     token: null,
     totalPageCount: null,
+    postStatus: null,
   },
   reducers: {
     changeCurrentPage(state, action) {
@@ -84,6 +95,50 @@ const articlesSlice = createSlice({
         }
       })
       .addCase(fetchArticleWithSlug.rejected, (state, action) => {
+        state.error = true
+        state.errorMessage = action.error.message
+      })
+
+      .addCase(editArticle.pending, (state) => {
+        state.postStatus = 'pending'
+        state.error = null
+        state.errorMessage = null
+        state.errorObject = null
+      })
+      .addCase(editArticle.fulfilled, (state, action) => {
+        const dataObj = action.payload
+        if (dataObj.errors) {
+          state.error = true
+          state.errorObject = dataObj.errors
+        }
+        if (dataObj.article) {
+          state.currentArticleObject = action.payload.article
+          state.postStatus = 'fulfilled'
+        }
+      })
+      .addCase(editArticle.rejected, (state, action) => {
+        state.error = true
+        state.errorMessage = action.error.message
+      })
+
+      .addCase(createNewArticle.pending, (state) => {
+        state.postStatus = 'pending'
+        state.error = null
+        state.errorMessage = null
+        state.errorObject = null
+      })
+      .addCase(createNewArticle.fulfilled, (state, action) => {
+        const dataObj = action.payload
+        if (dataObj.errors) {
+          state.error = true
+          state.errorObject = dataObj.errors
+        }
+        if (dataObj.article) {
+          state.currentArticleObject = action.payload.article
+          state.postStatus = 'fulfilled'
+        }
+      })
+      .addCase(createNewArticle.rejected, (state, action) => {
         state.error = true
         state.errorMessage = action.error.message
       })

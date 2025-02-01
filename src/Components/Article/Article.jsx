@@ -4,6 +4,7 @@ import { enGB } from 'date-fns/locale'
 import { useDispatch, useSelector } from 'react-redux'
 import Markdown from 'markdown-to-jsx'
 import { ScaleLoader } from 'react-spinners'
+import { Link } from 'react-router-dom'
 
 import { editAvatar, editOverview, editTags } from '../ArticleInList/ArticleInList'
 import { changeCurrentArticle, fetchArticleWithSlug } from '../../Store/articlesSlice'
@@ -14,12 +15,13 @@ export default function Article({ slug }) {
   const dispatch = useDispatch()
   const status = useSelector((state) => state.articles.articleStatus)
   const articleObj = useSelector((state) => state.articles.currentArticleObject)
+  const currentUser = useSelector((state) => state.user.userObject)
+
   if (!articleObj || slug !== articleObj.slug) {
     dispatch(changeCurrentArticle({ article: null }))
     dispatch(fetchArticleWithSlug(slug))
   }
   function editText(text, length = 105) {
-    console.log(text)
     if (text.length <= length) {
       return text
     }
@@ -36,30 +38,50 @@ export default function Article({ slug }) {
   function articleContent() {
     const tags = editTags(articleObj)
     const avatar = editAvatar(articleObj)
+
+    const buttons =
+      articleObj && articleObj.author && articleObj.author.username === currentUser.username ? (
+        <div className="article__buttons">
+          <button
+            onClick={() => {
+              console.log('delete')
+            }}
+            className={`${styleClasses.article__button} ${styleClasses['article__button--delete']}`}
+          >
+            Delete
+          </button>
+          <button className={styleClasses.article__button}>
+            <Link to={`/articles/:${articleObj.slug}/edit`}>Edit</Link>
+          </button>
+        </div>
+      ) : null
     return (
       <>
         <div className="article__header">
-          <div>
+          <div style={{ height: 'max-content' }}>
             <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
             <button className="article__like">
               <span className="article__like-icon"> </span>
               {articleObj.favoritesCount}
             </button>
             <ul className="article__tag-list">{tags}</ul>
+            <p className={styleClasses.article__description}>{articleObj.description}</p>
           </div>
-          <div className="article__author-user">
-            <p className="article__user-name">{editOverview(articleObj.author.username)}</p>
-            {avatar}
-            <p className="article__post-date">
-              {format(parseISO(articleObj.createdAt), 'LLLL d, yyyy', { locale: enGB })}
-            </p>
+          <div>
+            <div className="article__author-user">
+              <p className="article__user-name">{editOverview(articleObj.author.username)}</p>
+              {avatar}
+              <p className="article__post-date">
+                {format(parseISO(articleObj.createdAt), 'LLLL d, yyyy', { locale: enGB })}
+              </p>
+            </div>
+            {buttons}
           </div>
         </div>
         <div>
-          <p className={styleClasses.article__description}>{editOverview(articleObj.description, 105)}</p>
-          <p className={styleClasses.article__text}>
+          <div className={styleClasses.article__text}>
             <Markdown>{editText(articleObj.body)}</Markdown>
-          </p>
+          </div>
         </div>
       </>
     )
