@@ -1,1 +1,85 @@
 @import "../../style";
+
+.popup-wrapper {
+  //height: 100vh;
+  //width: 200vh;
+  //background-color: $popup-wrapper;
+  //position: absolute;
+  //left: 0;
+  //top: 0;
+
+  .delete-popup {
+    position: absolute;
+    top: 60px;
+    right: -130px;
+    border-radius: 5px;
+    box-shadow: 0 0 15px 0 $border-grey;
+
+    width: 240px;
+    height: 104px;
+    padding: 15px;
+
+    color: $text-grey;
+    font-size: 14px;
+    display: none;
+
+    .delete-popup__text {
+      margin: 0 0 0 24px;
+    }
+
+    .delete-popup__text:before {
+      position: absolute;
+      left: 17px;
+      top: 18px;
+
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+
+      background: url("../../Images/Vector.svg") no-repeat;
+    }
+
+    .delete-popup__buttons {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+
+      .delete-popup__button {
+        padding: 1px 7px 2px 7px;
+
+        font-family: inherit;
+        font-size: 14px;
+        color: inherit;
+
+        background-color: inherit;
+        border: 1px solid $border-grey;
+        border-radius: 4px;
+      }
+
+      .delete-popup__button--important {
+        margin-left: 8px;
+
+        border-color: $blue;
+        background-color: $blue;
+        color: white;
+      }
+    }
+  }
+
+  .delete-popup.active {
+    background-color: white;
+    display: block;
+  }
+
+  .delete-popup.active:before {
+    content: '';
+    position: absolute;
+    left: -8px;
+
+    border-right: 10px solid white;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  }
+
+}

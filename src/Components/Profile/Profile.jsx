@@ -2,20 +2,16 @@ import './Profile.scss'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 
 import { updateUserInfo } from '../../Store/userSlice'
 
 export default function Profile() {
-  const isRegistered = useSelector((state) => state.user.isRegistered)
   const userObj = useSelector((state) => state.user.userObject)
   const error = useSelector((state) => state.user.error)
   const errorObject = useSelector((state) => state.user.errorObject)
 
   const dispatch = useDispatch()
-
-  if (!isRegistered && !localStorage.getItem('token')) {
-    throw new Error('You are not registered, please, log in')
-  }
 
   const {
     register,
@@ -29,6 +25,10 @@ export default function Profile() {
     },
     mode: 'onBlur',
   })
+
+  if (!localStorage.getItem('token')) {
+    return <Redirect to="/sign-in" />
+  }
 
   const urlRegExp =
     // eslint-disable-next-line

@@ -96,18 +96,15 @@ function App() {
         <div className="blog-app">
           {appHeader}
           <ErrorBlock>
-            <Route path="/articles/:slug" render={({ match }) => <Article slug={match.params.slug} />} exact />
+            {/* <Route path="/articles/:slug" render={({ match }) => <Article slug={match.params.slug} />} exact /> */}
+            <Route path="/articles/:slug" component={Article} exact />
             <Route path="/articles" component={ArticleList} exact />
             <Route path="/" component={ArticleList} exact />
             <Route path="/sign-up" component={SignUpForm} exact />
             <Route path="/sign-in" component={SignInForm} exact />
             <Route path="/profile" component={Profile} exact />
             <Route path="/new-article" component={ArticleForm} exact />
-            <Route
-              path="/articles/:slug/edit"
-              render={({ match }) => <ArticleForm slug={match.params.slug} type="edit" />}
-              exact
-            />
+            <Route path="/articles/:slug/edit" component={ArticleForm} exact />
           </ErrorBlock>
         </div>
       </ConfigProvider>

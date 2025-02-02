@@ -3,25 +3,26 @@ import './ArticleForm.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { ScaleLoader } from 'react-spinners'
+import { Redirect, useParams } from 'react-router-dom'
 
 import { createNewArticle, editArticle, fetchArticleWithSlug } from '../../Store/articlesSlice'
 
-function ArticleFormContent({ articleObj, type = 'create' }) {
+function ArticleFormContent({ articleObj, slug }) {
   const errorObject = useSelector((state) => state.articles.errorObject)
   const dispatch = useDispatch()
 
   let title
-  if (type === 'edit') {
+  if (slug) {
     title = 'Edit article'
   } else title = 'Create new article'
 
   /* eslint-disable */
   const [tagsObj, setTagsObj] = useState(
-    type === 'edit' && articleObj && articleObj.tags
+    slug && articleObj && articleObj.tagList
       ? {
-        maxId: articleObj.tags.length,
+        maxId: articleObj.tagList.length,
         tag0: '',
-        tagsArray: articleObj.tags.map((tag, index) => ({
+        tagsArray: articleObj.tagList.map((tag, index) => ({
           id: index + 1,
           tag,
         })),
@@ -32,6 +33,7 @@ function ArticleFormContent({ articleObj, type = 'create' }) {
         tagsArray: [{ id: 1, tag: '' }],
       }
   )
+  console.log(articleObj, tagsObj)
   /* eslint-enable */
   const tagsArrayToDefaultValueObject = (obj) => {
     if (obj) {
@@ -56,7 +58,7 @@ function ArticleFormContent({ articleObj, type = 'create' }) {
     formState: { errors },
   } = useForm({
     mode: 'onBlur',
-    defaultValues: type === 'edit' ? defaultValues : null,
+    defaultValues: slug ? defaultValues : null,
   })
 
   const tagsToInputs = (tagsObject) =>
@@ -134,10 +136,10 @@ function ArticleFormContent({ articleObj, type = 'create' }) {
               tagList: tagsArray,
             },
           }
-          if (type === 'create') {
+          if (!slug) {
             dispatch(createNewArticle(argObj))
           }
-          if (type === 'edit') {
+          if (slug) {
             dispatch(editArticle({ articleObject: argObj, slug: articleObj.slug }))
           }
         })}
@@ -228,40 +230,41 @@ function ArticleFormContent({ articleObj, type = 'create' }) {
     </div>
   )
 }
-export default function ArticleForm({ type, slug }) {
+export default function ArticleForm() {
   const dispatch = useDispatch()
   const status = useSelector((state) => state.articles.articleStatus)
   const error = useSelector((state) => state.articles.error)
   const errorMessage = useSelector((state) => state.articles.errorMessage)
   const articleObj = useSelector((state) => state.articles.currentArticleObject)
   const currentUser = useSelector((state) => state.user.userObject)
-
-  if (type === 'edit' && !slug) {
-    throw new Error('Slug is required!')
-  }
+  const { slug } = useParams()
 
   useEffect(() => {
-    if (type === 'edit' && slug && (!articleObj || articleObj.slug !== slug)) {
+    if (slug && slug && (!articleObj || articleObj.slug !== slug)) {
       dispatch(fetchArticleWithSlug(slug))
     }
   }, [slug])
+  if (!localStorage.getItem('token')) {
+    return <Redirect to="/sign-in" />
+  }
   if (error && errorMessage) {
     throw new Error(errorMessage)
   }
   if (
-    type === 'edit' &&
+    slug &&
     articleObj &&
     slug === articleObj.slug &&
+    currentUser &&
     currentUser.username !== articleObj.author.username
   ) {
     throw new Error('This is not your article, you can not edit it.')
   }
-  if (type === 'edit' && (!articleObj || status === 'pending')) {
+  if (slug && (!articleObj || status === 'pending')) {
     return (
       <div className="spin">
         <ScaleLoader color="#1890ff" />
       </div>
     )
   }
-  return <ArticleFormContent articleObj={articleObj} type={type} />
+  return <ArticleFormContent articleObj={articleObj} slug={slug} />
 }

@@ -1,7 +1,7 @@
 @import "../../style";
 
 .article {
-  color: black;
+  color: $text-grey;
   text-decoration: none;
 
   background-color: white;
@@ -68,7 +68,7 @@
 
       .article__tag {
         color: $grey;
-        border: 1px solid $grey;
+        border: 1px solid $border-grey;
         border-radius: 3px;
         padding: 1px 5px;
         margin-right: 8px;

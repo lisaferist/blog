@@ -1,21 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 import { useDispatch, useSelector } from 'react-redux'
 import Markdown from 'markdown-to-jsx'
 import { ScaleLoader } from 'react-spinners'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import { editAvatar, editOverview, editTags } from '../ArticleInList/ArticleInList'
 import { changeCurrentArticle, fetchArticleWithSlug } from '../../Store/articlesSlice'
+import DeletePopUp from '../DeletePopUp'
 
 import styleClasses from './Article.module.scss'
 
-export default function Article({ slug }) {
+export default function Article() {
+  const { slug } = useParams()
   const dispatch = useDispatch()
   const status = useSelector((state) => state.articles.articleStatus)
   const articleObj = useSelector((state) => state.articles.currentArticleObject)
   const currentUser = useSelector((state) => state.user.userObject)
+
+  const [popupActive, setPopupActive] = useState(false)
 
   if (!articleObj || slug !== articleObj.slug) {
     dispatch(changeCurrentArticle({ article: null }))
@@ -40,7 +44,7 @@ export default function Article({ slug }) {
     const avatar = editAvatar(articleObj)
 
     const buttons =
-      articleObj && articleObj.author && articleObj.author.username === currentUser.username ? (
+      articleObj && currentUser && articleObj.author.username === currentUser.username ? (
         <div className="article__buttons">
           <button
             onClick={() => {
@@ -51,7 +55,7 @@ export default function Article({ slug }) {
             Delete
           </button>
           <button className={styleClasses.article__button}>
-            <Link to={`/articles/:${articleObj.slug}/edit`}>Edit</Link>
+            <Link to={`/articles/${articleObj.slug}/edit`}>Edit</Link>
           </button>
         </div>
       ) : null
@@ -83,6 +87,7 @@ export default function Article({ slug }) {
             <Markdown>{editText(articleObj.body)}</Markdown>
           </div>
         </div>
+        <DeletePopUp active={popupActive} setActive={setPopupActive} />
       </>
     )
   }
