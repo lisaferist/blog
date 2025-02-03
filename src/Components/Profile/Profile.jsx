@@ -41,7 +41,9 @@ export default function Profile() {
         <h2 className="form__title">Edit profile</h2>
         <form
           onSubmit={handleSubmit((data) => {
-            dispatch(updateUserInfo(data))
+            if (data.password === '') {
+              dispatch(updateUserInfo({ image: data.image, email: data.email, username: data.username }))
+            } else dispatch(updateUserInfo(data))
           })}
           className="form"
         >
@@ -154,7 +156,7 @@ export default function Profile() {
             </div>
           </label>
 
-          <input className="form__submit-button" type="submit" value="Create" />
+          <input className="form__submit-button" type="submit" value="Save" />
         </form>
       </div>
     </div>

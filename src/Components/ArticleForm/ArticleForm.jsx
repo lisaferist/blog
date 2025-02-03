@@ -33,7 +33,6 @@ function ArticleFormContent({ articleObj, slug }) {
         tagsArray: [{ id: 1, tag: '' }],
       }
   )
-  console.log(articleObj, tagsObj)
   /* eslint-enable */
   const tagsArrayToDefaultValueObject = (obj) => {
     if (obj) {
@@ -121,19 +120,17 @@ function ArticleFormContent({ articleObj, slug }) {
       <form
         className="form"
         onSubmit={handleSubmit((data) => {
-          const tagsKeys = Object.keys(data).filter((key) => key.includes('tag'))
-          const tagsArray = []
-          tagsKeys.forEach((key) => {
-            if (data[key] && data[key] !== '') {
-              tagsArray.push(data[key])
-            }
+          const { tagsArray } = tagsObj
+          const newTagsArray = []
+          tagsArray.forEach((tagObj) => {
+            newTagsArray.push(tagObj.tag)
           })
           const argObj = {
             article: {
               title: data.title,
               description: data.description,
               body: data.body,
-              tagList: tagsArray,
+              tagList: newTagsArray,
             },
           }
           if (!slug) {
