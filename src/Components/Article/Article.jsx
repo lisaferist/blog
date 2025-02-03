@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,7 +7,7 @@ import { ScaleLoader } from 'react-spinners'
 import { Link, useParams } from 'react-router-dom'
 
 import { editAvatar, editOverview, editTags } from '../ArticleInList/ArticleInList'
-import { changeCurrentArticle, fetchArticleWithSlug } from '../../Store/articlesSlice'
+import { changeCurrentArticle, dislikeArticle, fetchArticleWithSlug, likeArticle } from '../../Store/articlesSlice'
 import DeletePopUp from '../DeletePopUp'
 
 import styleClasses from './Article.module.scss'
@@ -20,6 +20,7 @@ export default function Article() {
   const currentUser = useSelector((state) => state.user.userObject)
 
   const [popupActive, setPopupActive] = useState(false)
+  const [isLiked, setIsLiked] = useState(articleObj ? articleObj.favorited : false)
 
   if (!articleObj || slug !== articleObj.slug) {
     dispatch(changeCurrentArticle({ article: null }))
@@ -39,16 +40,33 @@ export default function Article() {
     return newTextArray.join('')
   }
 
+  useEffect(() => {
+    if (articleObj) {
+      setIsLiked(articleObj.favorited)
+    }
+  }, [articleObj])
+
   function articleContent() {
     const tags = editTags(articleObj)
     const avatar = editAvatar(articleObj)
+    const likeOnClick = () => {
+      if (localStorage.getItem('token')) {
+        if (!isLiked) {
+          dispatch(likeArticle(slug))
+          setIsLiked(true)
+        } else {
+          dispatch(dislikeArticle(slug))
+          setIsLiked(false)
+        }
+      }
+    }
 
     const buttons =
       articleObj && currentUser && articleObj.author.username === currentUser.username ? (
         <div className="article__buttons">
           <button
             onClick={() => {
-              console.log('delete')
+              setPopupActive(true)
             }}
             className={`${styleClasses.article__button} ${styleClasses['article__button--delete']}`}
           >
@@ -59,14 +77,26 @@ export default function Article() {
           </button>
         </div>
       ) : null
+    let { favoritesCount } = articleObj
+    if (isLiked && !articleObj.favorited) {
+      favoritesCount++
+    }
+    if (!isLiked && articleObj.favorited) {
+      favoritesCount--
+    }
     return (
       <>
         <div className="article__header">
           <div style={{ height: 'max-content' }}>
             <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
-            <button className="article__like">
-              <span className="article__like-icon"> </span>
-              {articleObj.favoritesCount}
+            <button
+              className="article__like"
+              onClick={() => {
+                likeOnClick(articleObj.slug, dispatch)
+              }}
+            >
+              <span className={isLiked ? 'article__like-icon article__like-icon--red' : 'article__like-icon'}> </span>
+              {favoritesCount}
             </button>
             <ul className="article__tag-list">{tags}</ul>
             <p className={styleClasses.article__description}>{articleObj.description}</p>
@@ -87,7 +117,7 @@ export default function Article() {
             <Markdown>{editText(articleObj.body)}</Markdown>
           </div>
         </div>
-        <DeletePopUp active={popupActive} setActive={setPopupActive} />
+        <DeletePopUp active={popupActive} setActive={setPopupActive} slug={articleObj.slug} />
       </>
     )
   }

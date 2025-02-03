@@ -163,7 +163,13 @@ function ArticleFormContent({ articleObj, slug }) {
         </label>
         <label className="form__input-label">
           Short description:
-          <input className="form__input article-form__input" placeholder="Description" {...register('description')} />
+          <input
+            className="form__input article-form__input"
+            placeholder="Description"
+            {...register('description', {
+              required: 'Description is required',
+            })}
+          />
           <div className="form__input-error">
             {(errors.description || (errorObject && errorObject.description)) && (
               <p className="form__input-error-message">

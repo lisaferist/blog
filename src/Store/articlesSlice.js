@@ -6,6 +6,9 @@ import getArticleList from '../ApiService/Articles/getArticleList'
 import getArticle from '../ApiService/Articles/getArticle'
 import postArticle from '../ApiService/Articles/postArticle'
 import updateArticle from '../ApiService/Articles/updateArticle'
+import deleteArticle from '../ApiService/Articles/deleteArticle'
+import favoriteArticle from '../ApiService/Articles/favoriteArticle'
+import unfavoriteArticle from '../ApiService/Articles/unfavoriteArticle'
 
 export const fetchArticleList = createAsyncThunk('articles/fetchArticleList', async (arg, thunkAPI) => {
   const state = thunkAPI.getState()
@@ -17,6 +20,10 @@ export const fetchArticleWithSlug = createAsyncThunk('articles/fetchArticleWithS
   const data = await getArticle(arg)
   return data
 })
+export const deleteArticleWithSlug = createAsyncThunk('articles/deleteArticleWithSlug', async (arg) => {
+  const data = await deleteArticle(arg)
+  return data
+})
 export const editArticle = createAsyncThunk('articles/editArticle', async (arg) => {
   const { articleObject, slug } = arg
   const data = await updateArticle(articleObject, slug)
@@ -26,6 +33,15 @@ export const createNewArticle = createAsyncThunk('articles/createNewArticle', as
   const data = await postArticle(arg)
   return data
 })
+export const likeArticle = createAsyncThunk('articles/likeArticle', async (arg) => {
+  const data = await favoriteArticle(arg)
+  return data
+})
+export const dislikeArticle = createAsyncThunk('articles/dislikeArticle', async (arg) => {
+  const data = await unfavoriteArticle(arg)
+  return data
+})
+
 const articlesSlice = createSlice({
   name: 'articles',
   initialState: {
@@ -139,6 +155,66 @@ const articlesSlice = createSlice({
         }
       })
       .addCase(createNewArticle.rejected, (state, action) => {
+        state.error = true
+        state.errorMessage = action.error.message
+      })
+
+      .addCase(deleteArticleWithSlug.pending, (state) => {
+        state.postStatus = 'pending'
+        state.error = null
+        state.errorMessage = null
+        state.errorObject = null
+      })
+      .addCase(deleteArticleWithSlug.fulfilled, (state, action) => {
+        const dataObj = action.payload
+        if (dataObj.errors) {
+          state.error = true
+          state.errorObject = dataObj.errors
+        } else {
+          state.postStatus = 'fulfilled'
+        }
+      })
+      .addCase(deleteArticleWithSlug.rejected, (state, action) => {
+        state.error = true
+        state.errorMessage = action.error.message
+      })
+
+      .addCase(likeArticle.pending, (state) => {
+        state.postStatus = 'pending'
+        state.error = null
+        state.errorMessage = null
+        state.errorObject = null
+      })
+      .addCase(likeArticle.fulfilled, (state, action) => {
+        const dataObj = action.payload
+        if (dataObj.errors) {
+          state.error = true
+          state.errorObject = dataObj.errors
+        } else {
+          state.postStatus = 'fulfilled'
+        }
+      })
+      .addCase(likeArticle.rejected, (state, action) => {
+        state.error = true
+        state.errorMessage = action.error.message
+      })
+
+      .addCase(dislikeArticle.pending, (state) => {
+        state.postStatus = 'pending'
+        state.error = null
+        state.errorMessage = null
+        state.errorObject = null
+      })
+      .addCase(dislikeArticle.fulfilled, (state, action) => {
+        const dataObj = action.payload
+        if (dataObj.errors) {
+          state.error = true
+          state.errorObject = dataObj.errors
+        } else {
+          state.postStatus = 'fulfilled'
+        }
+      })
+      .addCase(dislikeArticle.rejected, (state, action) => {
         state.error = true
         state.errorMessage = action.error.message
       })

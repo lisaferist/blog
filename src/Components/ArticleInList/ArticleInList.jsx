@@ -50,7 +50,11 @@ export default function ArticleInList({ articleObj }) {
         <div>
           <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
           <button className="article__like">
-            <span className="article__like-icon"> </span>
+            <span
+              className={articleObj.favorited ? 'article__like-icon article__like-icon--red' : 'article__like-icon'}
+            >
+              {' '}
+            </span>
             {articleObj.favoritesCount}
           </button>
           <ul className="article__tag-list">{tags}</ul>

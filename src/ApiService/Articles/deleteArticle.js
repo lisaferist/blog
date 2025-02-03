@@ -1,12 +1,5 @@
 async function deleteArticle(slug) {
   const token = localStorage.getItem('token')
-  // {
-  //   "article": {
-  //   "title": "string",
-  //     "description": "string",
-  //     "body": "string",
-  // }
-  // }
   const optionsObj = {
     method: 'DELETE',
     headers: {
@@ -15,6 +8,9 @@ async function deleteArticle(slug) {
     },
   }
   const response = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}`, optionsObj)
+  if (response.ok) {
+    return 'ok'
+  }
   const body = await response.json()
   return body
 }

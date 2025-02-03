@@ -2,9 +2,10 @@ import React from 'react'
 import './DeletePopUp.scss'
 import { useDispatch } from 'react-redux'
 
-export default function DeletePopUp({ active, setActive }) {
+import { deleteArticleWithSlug } from '../../Store/articlesSlice'
+
+export default function DeletePopUp({ active, setActive, slug }) {
   const dispatch = useDispatch()
-  setActive(true)
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
@@ -13,7 +14,13 @@ export default function DeletePopUp({ active, setActive }) {
         setActive(false)
       }}
     >
-      <div className={active ? 'delete-popup active' : 'delete-popup'}>
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
+        className={active ? 'delete-popup active' : 'delete-popup'}
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
+      >
         <p className="delete-popup__text">Are you sure to delete this article?</p>
         <div className="delete-popup__buttons">
           <button
@@ -27,7 +34,7 @@ export default function DeletePopUp({ active, setActive }) {
           <button
             className="delete-popup__button delete-popup__button--important"
             onClick={() => {
-              console.log(dispatch)
+              dispatch(deleteArticleWithSlug(slug))
             }}
           >
             Yes
