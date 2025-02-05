@@ -1,10 +1,10 @@
 import React from 'react'
 import './SignUpForm.scss'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { logOut, signUp } from '../../Store/userSlice'
+import { signUp } from '../../Store/userSlice'
 
 export const errorMassageService = (errorsString) => {
   if (!errorsString) {
@@ -35,26 +35,7 @@ export default function SignUpForm() {
   })
 
   if (isRegistered || localStorage.getItem('token')) {
-    return (
-      <div className="form-wrapper">
-        <div className="form__registred">
-          You are already registered!{' '}
-          <div className="form__footer">
-            You should
-            <span className="form__footer-link">
-              <button
-                onClick={() => {
-                  dispatch(logOut())
-                }}
-              >
-                log out
-              </button>
-            </span>
-            before logging in
-          </div>
-        </div>
-      </div>
-    )
+    return <Redirect to="/articles" />
   }
 
   return (

@@ -47,6 +47,7 @@ const userSlice = createSlice({
     isRegistered: false,
     userObject: null,
     userStatus: null,
+    isProfileEdited: false,
   },
   reducers: {
     logOut(state) {
@@ -56,6 +57,9 @@ const userSlice = createSlice({
       state.error = null
       state.errorMessage = null
       state.errorObject = null
+    },
+    falseIsProfileEdited(state) {
+      state.isProfileEdited = false
     },
   },
   extraReducers: (builder) => {
@@ -161,6 +165,7 @@ const userSlice = createSlice({
         if (dataObj.user) {
           state.userObject = dataObj.user
           state.userStatus = 'fulfilled'
+          state.isProfileEdited = true
           state.isRegistered = true
           state.error = null
           state.errorMessage = null
@@ -176,4 +181,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const { logOut } = userSlice.actions
+export const { logOut, falseIsProfileEdited } = userSlice.actions

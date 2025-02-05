@@ -89,12 +89,7 @@ export default function Article() {
         <div className="article__header">
           <div style={{ height: 'max-content' }}>
             <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
-            <button
-              className="article__like"
-              onClick={() => {
-                likeOnClick(articleObj.slug, dispatch)
-              }}
-            >
+            <button className="article__like" onClick={likeOnClick}>
               <span className={isLiked ? 'article__like-icon article__like-icon--red' : 'article__like-icon'}> </span>
               {favoritesCount}
             </button>

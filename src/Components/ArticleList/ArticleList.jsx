@@ -1,21 +1,26 @@
 import React, { Fragment } from 'react'
 import './ArticleList.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { ScaleLoader } from 'react-spinners'
 import { Pagination } from 'antd'
 
 import ArticleInList from '../ArticleInList'
 import { changeCurrentArticle, changeCurrentPage } from '../../Store/articlesSlice'
 import ErrorBlock from '../HOCs/ErrorBlock'
+import { falseIsProfileEdited } from '../../Store/userSlice'
 
 export default function ArticleList() {
   const articlesCount = useSelector((state) => state.articles.articlesCount)
   const articleList = useSelector((state) => state.articles.articleList)
   const currentPage = useSelector((state) => state.articles.currentPage)
+  const isProfileEdited = useSelector((state) => state.user.isProfileEdited)
   const articlesOnCurrentPage = articleList[currentPage]
   const status = useSelector((state) => state.articles.listStatus)
   const dispatch = useDispatch()
+
+  if (isProfileEdited) {
+    dispatch(falseIsProfileEdited())
+  }
 
   const content =
     !articlesOnCurrentPage || status === 'pending' ? (
@@ -30,11 +35,9 @@ export default function ArticleList() {
             dispatch(changeCurrentArticle({ article: articleObj }))
           }}
         >
-          <Link to={`/articles/${articleObj.slug}`}>
-            <ErrorBlock>
-              <ArticleInList articleObj={articleObj} />
-            </ErrorBlock>
-          </Link>
+          <ErrorBlock>
+            <ArticleInList articleObj={articleObj} />
+          </ErrorBlock>
         </li>
       ))
     )

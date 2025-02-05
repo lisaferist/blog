@@ -7,14 +7,12 @@ import { deleteArticleWithSlug } from '../../Store/articlesSlice'
 export default function DeletePopUp({ active, setActive, slug }) {
   const dispatch = useDispatch()
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={active ? 'popup-wrapper active' : 'popup-wrapper'}
       onClick={() => {
         setActive(false)
       }}
     >
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div
         className={active ? 'delete-popup active' : 'delete-popup'}
         onClick={(e) => {

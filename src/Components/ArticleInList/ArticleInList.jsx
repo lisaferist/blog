@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './ArticleInList.scss'
 import { format, parseISO } from 'date-fns'
 import { enGB } from 'date-fns/locale'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+
+import { dislikeArticle, likeArticle } from '../../Store/articlesSlice'
 
 export function editOverview(text, maxOverviewLength = 13, isShouldSpace = false) {
   if (!isShouldSpace || text.slice(0, Math.round(maxOverviewLength / 2) + 2).includes(' ')) {
@@ -42,20 +46,50 @@ export const editAvatar = (articleObj) =>
   )
 
 export default function ArticleInList({ articleObj }) {
+  const history = useHistory()
   const tags = editTags(articleObj)
   const avatar = editAvatar(articleObj)
+  const dispatch = useDispatch()
+  const [isLiked, setIsLiked] = useState(articleObj ? articleObj.favorited : false)
+  useEffect(() => {
+    if (articleObj) {
+      setIsLiked(articleObj.favorited)
+    }
+  }, [articleObj])
+
+  const likeOnClick = (event) => {
+    event.stopPropagation()
+    if (localStorage.getItem('token')) {
+      if (!isLiked) {
+        dispatch(likeArticle(articleObj.slug))
+        setIsLiked(true)
+      } else {
+        dispatch(dislikeArticle(articleObj.slug))
+        setIsLiked(false)
+      }
+    }
+  }
+  let { favoritesCount } = articleObj
+  if (isLiked && !articleObj.favorited) {
+    favoritesCount++
+  }
+  if (!isLiked && articleObj.favorited) {
+    favoritesCount--
+  }
+
   return (
-    <div className="article-list__article article">
+    <div
+      className="article-list__article article"
+      onClick={() => {
+        history.push(`/articles/${articleObj.slug}`)
+      }}
+    >
       <div className="article__header">
         <div>
           <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
-          <button className="article__like">
-            <span
-              className={articleObj.favorited ? 'article__like-icon article__like-icon--red' : 'article__like-icon'}
-            >
-              {' '}
-            </span>
-            {articleObj.favoritesCount}
+          <button className="article__like" onClick={likeOnClick}>
+            <span className={isLiked ? 'article__like-icon article__like-icon--red' : 'article__like-icon'}> </span>
+            {favoritesCount}
           </button>
           <ul className="article__tag-list">{tags}</ul>
         </div>

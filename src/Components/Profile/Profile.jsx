@@ -10,6 +10,7 @@ export default function Profile() {
   const userObj = useSelector((state) => state.user.userObject)
   const error = useSelector((state) => state.user.error)
   const errorObject = useSelector((state) => state.user.errorObject)
+  const isProfileEdited = useSelector((state) => state.user.isProfileEdited)
 
   const dispatch = useDispatch()
 
@@ -26,6 +27,9 @@ export default function Profile() {
     mode: 'onBlur',
   })
 
+  if (isProfileEdited) {
+    return <Redirect to="/articles" />
+  }
   if (!localStorage.getItem('token')) {
     return <Redirect to="/sign-in" />
   }

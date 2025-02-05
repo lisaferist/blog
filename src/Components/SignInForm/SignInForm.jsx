@@ -1,10 +1,10 @@
 import React from 'react'
 import './SignInForm.module.scss'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { logOut, signIn } from '../../Store/userSlice'
+import { signIn } from '../../Store/userSlice'
 
 export default function SignInForm() {
   const isRegistered = useSelector((state) => state.user.isRegistered)
@@ -22,26 +22,7 @@ export default function SignInForm() {
   const emailRegExp = /^\S+@\S+\.\S+$/
 
   if (isRegistered || localStorage.getItem('token')) {
-    return (
-      <div className="form-wrapper">
-        <div className="form__registred">
-          You are already registered!{' '}
-          <div className="form__footer">
-            You should
-            <span className="form__footer-link">
-              <button
-                onClick={() => {
-                  dispatch(logOut())
-                }}
-              >
-                log out
-              </button>
-            </span>
-            before logging in
-          </div>
-        </div>
-      </div>
-    )
+    return <Redirect to="/articles" />
   }
 
   return (
