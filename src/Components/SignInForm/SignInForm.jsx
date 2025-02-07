@@ -4,12 +4,18 @@ import { Link, Redirect } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { signIn } from '../../Store/userSlice'
+import { nullifyLoginErrorObjectField, signIn } from '../../Store/userSlice'
 
 export default function SignInForm() {
   const isRegistered = useSelector((state) => state.user.isRegistered)
-  const errorObject = useSelector((state) => state.user.errorObject)
+  const errorObject = useSelector((state) => state.user.loginErrorObject)
   const dispatch = useDispatch()
+
+  const inputOnchange = (field) => {
+    if (errorObject && errorObject[field]) {
+      dispatch(nullifyLoginErrorObjectField({ field }))
+    }
+  }
 
   const {
     register,
@@ -38,6 +44,7 @@ export default function SignInForm() {
           Email address
           <br />
           <input
+            type="email"
             className={
               errors.email || (errorObject && errorObject.email) ? 'form__input form__input--border-red' : 'form__input'
             }
@@ -46,6 +53,9 @@ export default function SignInForm() {
               required: 'Email address is required',
               pattern: { value: emailRegExp, message: 'Incorrect email address' },
             })}
+            onChange={() => {
+              inputOnchange('email')
+            }}
           />
           <div className="form__input-error">
             {(errors.email || (errorObject && errorObject.email)) && (
@@ -55,10 +65,12 @@ export default function SignInForm() {
             )}
           </div>
         </label>
+
         <label className="form__input-label">
           Password
           <br />
           <input
+            type="password"
             className={
               errors.password || (errorObject && errorObject.password)
                 ? 'form__input form__input--border-red'
@@ -66,6 +78,9 @@ export default function SignInForm() {
             }
             placeholder="Password"
             {...register('password', { required: 'Password is required' })}
+            onChange={() => {
+              inputOnchange('password')
+            }}
           />
           <div className="form__input-error">
             {(errors.password || (errorObject && errorObject.password)) && (

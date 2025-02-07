@@ -1,11 +1,16 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import './ArticleList.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { ScaleLoader } from 'react-spinners'
 import { Pagination } from 'antd'
 
 import ArticleInList from '../ArticleInList'
-import { changeCurrentArticle, changeCurrentPage } from '../../Store/articlesSlice'
+import {
+  changeCurrentArticle,
+  changeCurrentPage,
+  falseIsArticleCreatedOrEdited,
+  fetchArticleList,
+} from '../../Store/articlesSlice'
 import ErrorBlock from '../HOCs/ErrorBlock'
 import { falseIsProfileEdited } from '../../Store/userSlice'
 
@@ -14,13 +19,24 @@ export default function ArticleList() {
   const articleList = useSelector((state) => state.articles.articleList)
   const currentPage = useSelector((state) => state.articles.currentPage)
   const isProfileEdited = useSelector((state) => state.user.isProfileEdited)
+  const isArticleCreatedOrEdited = useSelector((state) => state.articles.isArticleCreatedOrEdited)
+
   const articlesOnCurrentPage = articleList[currentPage]
   const status = useSelector((state) => state.articles.listStatus)
   const dispatch = useDispatch()
 
-  if (isProfileEdited) {
-    dispatch(falseIsProfileEdited())
-  }
+  useEffect(() => {
+    dispatch(fetchArticleList())
+  }, [currentPage])
+
+  useEffect(() => {
+    if (isProfileEdited) {
+      dispatch(falseIsProfileEdited())
+    }
+    if (isArticleCreatedOrEdited) {
+      dispatch(falseIsArticleCreatedOrEdited())
+    }
+  }, [])
 
   const content =
     !articlesOnCurrentPage || status === 'pending' ? (

@@ -89,6 +89,8 @@ body {
         font-size: 18px;
         font-weight: normal;
         align-self: center;
+
+        cursor: pointer;
       }
 
       .header__button {
@@ -97,7 +99,12 @@ body {
         font-size: 18px;
         background-color: inherit;
 
-        cursor: pointer
+        cursor: pointer;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
       }
       .header__button--green {
         color: $green;

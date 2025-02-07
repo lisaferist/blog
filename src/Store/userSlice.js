@@ -44,6 +44,9 @@ const userSlice = createSlice({
     error: null,
     errorMessage: null,
     errorObject: null,
+    profileErrorObject: null,
+    loginErrorObject: null,
+    registerErrorObject: null,
     isRegistered: false,
     userObject: null,
     userStatus: null,
@@ -61,6 +64,15 @@ const userSlice = createSlice({
     falseIsProfileEdited(state) {
       state.isProfileEdited = false
     },
+    nullifyProfileErrorObjectField(state, action) {
+      state.profileErrorObject[action.payload.field] = null
+    },
+    nullifyLoginErrorObjectField(state, action) {
+      state.loginErrorObject[action.payload.field] = null
+    },
+    nullifyRegisterErrorObjectField(state, action) {
+      state.registerErrorObject[action.payload.field] = null
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -69,13 +81,13 @@ const userSlice = createSlice({
         state.userStatus = 'pending'
         state.error = null
         state.errorMessage = null
-        state.errorObject = null
+        state.registerErrorObject = null
       })
       .addCase(signUp.fulfilled, (state, action) => {
         const dataObj = action.payload
         if (dataObj.errors) {
           state.error = true
-          state.errorObject = dataObj.errors
+          state.registerErrorObject = dataObj.errors
         }
         if (dataObj.user) {
           state.userObject = dataObj.user
@@ -84,7 +96,7 @@ const userSlice = createSlice({
           state.isRegistered = true
           state.error = null
           state.errorMessage = null
-          state.errorObject = null
+          state.registerErrorObject = null
         }
       })
       .addCase(signUp.rejected, (state, action) => {
@@ -97,13 +109,13 @@ const userSlice = createSlice({
         state.userStatus = 'pending'
         state.error = null
         state.errorMessage = null
-        state.errorObject = null
+        state.loginErrorObject = null
       })
       .addCase(signIn.fulfilled, (state, action) => {
         const dataObj = action.payload
         if (dataObj.errors) {
           state.error = true
-          state.errorObject = dataObj.errors
+          state.loginErrorObject = dataObj.errors
         }
         if (dataObj.user) {
           state.userObject = dataObj.user
@@ -112,7 +124,7 @@ const userSlice = createSlice({
           state.isRegistered = true
           state.error = null
           state.errorMessage = null
-          state.errorObject = null
+          state.loginErrorObject = null
         }
       })
       .addCase(signIn.rejected, (state, action) => {
@@ -154,13 +166,13 @@ const userSlice = createSlice({
         state.userStatus = 'pending'
         state.error = null
         state.errorMessage = null
-        state.errorObject = null
+        state.profileErrorObject = null
       })
       .addCase(updateUserInfo.fulfilled, (state, action) => {
         const dataObj = action.payload
         if (dataObj.errors) {
           state.error = true
-          state.errorObject = dataObj.errors
+          state.profileErrorObject = dataObj.errors
         }
         if (dataObj.user) {
           state.userObject = dataObj.user
@@ -169,7 +181,7 @@ const userSlice = createSlice({
           state.isRegistered = true
           state.error = null
           state.errorMessage = null
-          state.errorObject = null
+          state.profileErrorObject = null
         }
       })
       .addCase(updateUserInfo.rejected, (state, action) => {
@@ -181,4 +193,10 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const { logOut, falseIsProfileEdited } = userSlice.actions
+export const {
+  logOut,
+  falseIsProfileEdited,
+  nullifyLoginErrorObjectField,
+  nullifyProfileErrorObjectField,
+  nullifyRegisterErrorObjectField,
+} = userSlice.actions

@@ -54,6 +54,7 @@ const articlesSlice = createSlice({
     errorObject: null,
     listStatus: null,
     articleStatus: null,
+    isArticleCreatedOrEdited: false,
     token: null,
     totalPageCount: null,
     postStatus: null,
@@ -65,6 +66,9 @@ const articlesSlice = createSlice({
     },
     changeCurrentArticle(state, action) {
       state.currentArticleObject = action.payload.article
+    },
+    falseIsArticleCreatedOrEdited(state) {
+      state.isArticleCreatedOrEdited = false
     },
   },
   extraReducers: (builder) => {
@@ -130,6 +134,7 @@ const articlesSlice = createSlice({
         if (dataObj.article) {
           state.currentArticleObject = action.payload.article
           state.postStatus = 'fulfilled'
+          state.isArticleCreatedOrEdited = true
         }
       })
       .addCase(editArticle.rejected, (state, action) => {
@@ -152,6 +157,7 @@ const articlesSlice = createSlice({
         if (dataObj.article) {
           state.currentArticleObject = action.payload.article
           state.postStatus = 'fulfilled'
+          state.isArticleCreatedOrEdited = true
         }
       })
       .addCase(createNewArticle.rejected, (state, action) => {
@@ -223,4 +229,4 @@ const articlesSlice = createSlice({
 
 export default articlesSlice.reducer
 
-export const { changeCurrentPage, changeCurrentArticle } = articlesSlice.actions
+export const { changeCurrentPage, changeCurrentArticle, falseIsArticleCreatedOrEdited } = articlesSlice.actions

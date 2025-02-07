@@ -109,7 +109,7 @@ export default function Article() {
         </div>
         <div>
           <div className={styleClasses.article__text}>
-            <Markdown>{editText(articleObj.body)}</Markdown>
+            <Markdown>{articleObj.body ? editText(articleObj.body) : ''}</Markdown>
           </div>
         </div>
         <DeletePopUp active={popupActive} setActive={setPopupActive} slug={articleObj.slug} />

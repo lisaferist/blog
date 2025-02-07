@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 
 import ArticleList from '../ArticleList'
-import { fetchArticleList } from '../../Store/articlesSlice'
 import ErrorBlock from '../HOCs/ErrorBlock'
 import Article from '../Article'
 import SignUpForm from '../SignUpForm'
@@ -16,17 +15,9 @@ import { getUserByToken, logOut } from '../../Store/userSlice'
 import ArticleForm from '../ArticleForm'
 
 function App() {
-  const articleList = useSelector((state) => state.articles.articleList)
-  const currentPage = useSelector((state) => state.articles.currentPage)
   const dispatch = useDispatch()
   const isRegistered = useSelector((state) => state.user.isRegistered)
   const userObj = useSelector((state) => state.user.userObject)
-
-  useEffect(() => {
-    if (!articleList[currentPage]) {
-      dispatch(fetchArticleList())
-    }
-  }, [currentPage])
 
   useEffect(() => {
     if (localStorage.getItem('token') && !userObj) {
@@ -41,9 +32,9 @@ function App() {
           <Link to="/">Realworld Blog</Link>
         </h1>
         <Link to="/new-article">
-          <button className="header__button header__button--green registered-header__button--width">
-            Create article
-          </button>
+          <div className="header__button header__button--green registered-header__button--width">
+            <p>Create article</p>
+          </div>
         </Link>
         <Link to="/profile">
           <div className="registered-header__user-info">
@@ -53,14 +44,14 @@ function App() {
             <img className="registered-header__user-avatar" alt="avatar" src={(userObj && userObj.image) || null} />
           </div>
         </Link>
-        <button
+        <div
           className="header__button registered-header__button--bordered"
           onClick={() => {
             dispatch(logOut())
           }}
         >
           <Link to="/">Log Out</Link>
-        </button>
+        </div>
       </header>
     ) : (
       <header className="header unregistered-header">
@@ -68,10 +59,14 @@ function App() {
           <Link to="/">Realworld Blog</Link>
         </h1>
         <Link to="/sign-in">
-          <button className="header__button unregistered-header__button">Sign in</button>
+          <div className="header__button unregistered-header__button">
+            <p>Sign in</p>
+          </div>
         </Link>
         <Link to="/sign-up">
-          <button className="header__button unregistered-header__button header__button--green">Sign up</button>
+          <div className="header__button unregistered-header__button header__button--green">
+            <p>Sign up</p>
+          </div>
         </Link>
       </header>
     )

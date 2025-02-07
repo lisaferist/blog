@@ -78,15 +78,18 @@ export default function ArticleInList({ articleObj }) {
   }
 
   return (
-    <div
-      className="article-list__article article"
-      onClick={() => {
-        history.push(`/articles/${articleObj.slug}`)
-      }}
-    >
+    <div className="article-list__article article">
       <div className="article__header">
         <div>
-          <h4 className="article__title">{editOverview(articleObj.title, 60)}</h4>
+          <h4 className="article__title">
+            <button
+              onClick={() => {
+                history.push(`/articles/${articleObj.slug}`)
+              }}
+            >
+              {editOverview(articleObj.title, 60)}
+            </button>
+          </h4>
           <button className="article__like" onClick={likeOnClick}>
             <span className={isLiked ? 'article__like-icon article__like-icon--red' : 'article__like-icon'}> </span>
             {favoritesCount}

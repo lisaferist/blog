@@ -4,15 +4,21 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
-import { updateUserInfo } from '../../Store/userSlice'
+import { nullifyProfileErrorObjectField, updateUserInfo } from '../../Store/userSlice'
 
 export default function Profile() {
   const userObj = useSelector((state) => state.user.userObject)
   const error = useSelector((state) => state.user.error)
-  const errorObject = useSelector((state) => state.user.errorObject)
+  const errorObject = useSelector((state) => state.user.profileErrorObject)
   const isProfileEdited = useSelector((state) => state.user.isProfileEdited)
 
   const dispatch = useDispatch()
+
+  const inputOnchange = (field) => {
+    if (errorObject && errorObject[field]) {
+      dispatch(nullifyProfileErrorObjectField({ field }))
+    }
+  }
 
   const {
     register,
@@ -20,9 +26,9 @@ export default function Profile() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: userObj && userObj.username,
-      email: userObj && userObj.email,
-      image: userObj && userObj.image,
+      profileUsername: userObj && userObj.username,
+      profileEmail: userObj && userObj.email,
+      profileImage: userObj && userObj.image,
     },
     mode: 'onBlur',
   })
@@ -45,8 +51,10 @@ export default function Profile() {
         <h2 className="form__title">Edit profile</h2>
         <form
           onSubmit={handleSubmit((data) => {
-            if (data.password === '') {
-              dispatch(updateUserInfo({ image: data.image, email: data.email, username: data.username }))
+            if (data.profilePassword === '') {
+              dispatch(
+                updateUserInfo({ image: data.profileImage, email: data.profileEmail, username: data.profileUsername })
+              )
             } else dispatch(updateUserInfo(data))
           })}
           className="form"
@@ -55,9 +63,9 @@ export default function Profile() {
             Username
             <br />
             <input
-              className={errors.username ? 'form__input form__input--border-red' : 'form__input'}
+              className={errors.profileUsername ? 'form__input form__input--border-red' : 'form__input'}
               placeholder="Username"
-              {...register('username', {
+              {...register('profileUsername', {
                 required: 'Username is required',
                 minLength: {
                   value: 3,
@@ -68,11 +76,14 @@ export default function Profile() {
                   message: 'Maximum length is 20',
                 },
               })}
+              onChange={() => {
+                inputOnchange('username')
+              }}
             />
             <div className="form__input-error">
-              {(errors.username || (errorObject && errorObject.username)) && (
+              {(errors.profileUsername || (errorObject && errorObject.username)) && (
                 <p className="form__input-error-message">
-                  {(errors.username && errors.username.message) ||
+                  {(errors.profileUsername && errors.profileUsername.message) ||
                     (errorObject && errorObject.username) ||
                     'Unexpected error!'}
                 </p>
@@ -84,17 +95,23 @@ export default function Profile() {
             Email address
             <br />
             <input
-              className={errors.email ? 'form__input form__input--border-red' : 'form__input'}
+              type="email"
+              className={errors.profileEmail ? 'form__input form__input--border-red' : 'form__input'}
               placeholder="Email address"
-              {...register('email', {
+              {...register('profileEmail', {
                 required: 'Email address is required',
                 pattern: { value: emailRegExp, message: 'Incorrect email address' },
               })}
+              onChange={() => {
+                inputOnchange('email')
+              }}
             />
             <div className="form__input-error">
-              {(errors.email || (errorObject && errorObject.email)) && (
+              {(errors.profileEmail || (errorObject && errorObject.email)) && (
                 <p className="form__input-error-message">
-                  {(errors.email && errors.email.message) || (errorObject && errorObject.email) || 'Unexpected error!'}
+                  {(errors.profileEmail && errors.profileEmail.message) ||
+                    (errorObject && errorObject.email) ||
+                    'Unexpected error!'}
                 </p>
               )}
             </div>
@@ -104,9 +121,10 @@ export default function Profile() {
             New Password
             <br />
             <input
-              className={errors.password ? 'form__input form__input--border-red' : 'form__input'}
+              type="password"
+              className={errors.profilePassword ? 'form__input form__input--border-red' : 'form__input'}
               placeholder="New Password"
-              {...register('password', {
+              {...register('profilePassword', {
                 minLength: {
                   value: 6,
                   message: 'Your password needs to be at least 6 characters.',
@@ -116,11 +134,14 @@ export default function Profile() {
                   message: 'Maximum length is 40',
                 },
               })}
+              onChange={() => {
+                inputOnchange('password')
+              }}
             />
             <div className="form__input-error">
-              {(errors.password || (errorObject && errorObject.password)) && (
+              {(errors.profilePassword || (errorObject && errorObject.password)) && (
                 <p className="form__input-error-message">
-                  {(errors.password && errors.password.message) ||
+                  {(errors.profilePassword && errors.profilePassword.message) ||
                     (errorObject && errorObject.password) ||
                     'Unexpected error!'}
                 </p>
@@ -132,29 +153,30 @@ export default function Profile() {
             Avatar image
             <br />
             <input
-              className={errors.image ? 'form__input form__input--border-red' : 'form__input'}
+              type="url"
+              className={errors.profileImage ? 'form__input form__input--border-red' : 'form__input'}
               placeholder="Avatar image"
-              {...register('image', {
+              {...register('profileImage', {
                 pattern: {
                   value: urlRegExp,
                   message: 'Incorrect url',
                 },
               })}
+              onChange={() => {
+                inputOnchange('image')
+              }}
             />
             <div className="form__input-error">
-              {(errors.image || (errorObject && errorObject.image)) && (
+              {(errors.profileImage || (errorObject && errorObject.image)) && (
                 <p className="form__input-error-message">
-                  {(errors.image && errors.image.message) || (errorObject && errorObject.image) || 'Unexpected error!'}
+                  {(errors.profileImage && errors.profileImage.message) ||
+                    (errorObject && errorObject.image) ||
+                    'Unexpected error!'}
                 </p>
               )}
             </div>
             <div className="form__input-error">
-              {((error && !errorObject) ||
-                (errorObject &&
-                  !errorObject.email &&
-                  !errorObject.username &&
-                  !errorObject.password &&
-                  !errorObject.image)) && (
+              {error && !errorObject && (
                 <p className="form__input-error-message">Something went wrong, please try again later</p>
               )}
             </div>

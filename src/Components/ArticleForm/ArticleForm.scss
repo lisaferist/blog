@@ -1,6 +1,21 @@
 @import "../../style";
 .article-form.form-wrapper {
   width: 938px;
+  position: relative;
+
+  .article-form__button.form__button {
+    background-color: inherit;
+    border: $blue 1px solid;
+    border-radius: 5px;
+    color: $blue;
+    width: 136px;
+    height: 40px;
+  }
+  .article-form__button--add {
+    position: absolute;
+    left: 488px;
+    bottom: 126px;
+  }
 
   .form__input-label {
     .article-form__input.form__input {
@@ -18,14 +33,7 @@
         margin-right: 18px;
       }
 
-      .article-form__button.form__button {
-        background-color: inherit;
-        border: $blue 1px solid;
-        border-radius: 5px;
-        color: $blue;
-        width: 136px;
-        height: 40px;
-      }
+
 
       .article-form__button.form__button.article-form__button--delete {
         border-color: $red;

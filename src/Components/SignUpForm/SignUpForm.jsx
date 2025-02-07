@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { signUp } from '../../Store/userSlice'
+import { nullifyRegisterErrorObjectField, signUp } from '../../Store/userSlice'
 
 export const errorMassageService = (errorsString) => {
   if (!errorsString) {
@@ -22,8 +22,14 @@ export const errorMassageService = (errorsString) => {
 
 export default function SignUpForm() {
   const isRegistered = useSelector((state) => state.user.isRegistered)
-  const errorObject = useSelector((state) => state.user.errorObject)
+  const errorObject = useSelector((state) => state.user.registerErrorObject)
   const dispatch = useDispatch()
+
+  const inputOnchange = (field) => {
+    if (errorObject && errorObject[field]) {
+      dispatch(nullifyRegisterErrorObjectField({ field }))
+    }
+  }
 
   const {
     register,
@@ -68,6 +74,9 @@ export default function SignUpForm() {
                 message: 'Maximum length is 20',
               },
             })}
+            onChange={() => {
+              inputOnchange('username')
+            }}
           />
           <div className="form__input-error">
             {(errors.username || (errorObject && errorObject.username)) && (
@@ -83,6 +92,7 @@ export default function SignUpForm() {
           Email address
           <br />
           <input
+            type="email"
             className={
               errors.email || (errorObject && errorObject.email) ? 'form__input form__input--border-red' : 'form__input'
             }
@@ -91,6 +101,9 @@ export default function SignUpForm() {
               required: 'Email address is required',
               pattern: { value: /^\S+@\S+\.\S+$/, message: 'Incorrect email address' },
             })}
+            onChange={() => {
+              inputOnchange('email')
+            }}
           />
           <div className="form__input-error">
             {(errors.email || (errorObject && errorObject.email)) && (
@@ -104,6 +117,7 @@ export default function SignUpForm() {
           Password
           <br />
           <input
+            type="password"
             className={
               errors.password || (errorObject && errorObject.password)
                 ? 'form__input form__input--border-red'
@@ -121,6 +135,9 @@ export default function SignUpForm() {
                 message: 'Maximum length is 40',
               },
             })}
+            onChange={() => {
+              inputOnchange('password')
+            }}
           />
           <div className="form__input-error">
             {(errors.password || (errorObject && errorObject.password)) && (
@@ -136,6 +153,7 @@ export default function SignUpForm() {
           Repeat Password
           <br />
           <input
+            type="password"
             className={errors.repeatedPassword ? 'form__input form__input--border-red' : 'form__input'}
             placeholder="Password"
             {...register('repeatedPassword', {

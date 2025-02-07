@@ -10,6 +10,7 @@ import { createNewArticle, editArticle, fetchArticleWithSlug } from '../../Store
 function ArticleFormContent({ articleObj, slug }) {
   const errorObject = useSelector((state) => state.articles.errorObject)
   const dispatch = useDispatch()
+  const isArticleCreatedOrEdited = useSelector((state) => state.articles.isArticleCreatedOrEdited)
 
   let title
   if (slug) {
@@ -21,7 +22,6 @@ function ArticleFormContent({ articleObj, slug }) {
     slug && articleObj && articleObj.tagList
       ? {
         maxId: articleObj.tagList.length,
-        tag0: '',
         tagsArray: articleObj.tagList.map((tag, index) => ({
           id: index + 1,
           tag,
@@ -29,7 +29,6 @@ function ArticleFormContent({ articleObj, slug }) {
       }
       : {
         maxId: 1,
-        tag0: '',
         tagsArray: [{ id: 1, tag: '' }],
       }
   )
@@ -59,6 +58,10 @@ function ArticleFormContent({ articleObj, slug }) {
     mode: 'onBlur',
     defaultValues: slug ? defaultValues : null,
   })
+
+  if (isArticleCreatedOrEdited) {
+    return <Redirect to="/articles" />
+  }
 
   const tagsToInputs = (tagsObject) =>
     tagsObject.tagsArray.map((tag) => {
@@ -123,7 +126,9 @@ function ArticleFormContent({ articleObj, slug }) {
           const { tagsArray } = tagsObj
           const newTagsArray = []
           tagsArray.forEach((tagObj) => {
-            newTagsArray.push(tagObj.tag)
+            if (tagObj.tag !== '') {
+              newTagsArray.push(tagObj.tag)
+            }
           })
           const argObj = {
             article: {
@@ -195,30 +200,9 @@ function ArticleFormContent({ articleObj, slug }) {
         <label className="form__input-label">
           Tags:
           {tags}
-          <div className="article-form__tag-input-wrapper form__tag-input-wrapper" key="tag0">
-            <input
-              className="form__input article-form__input article-form__input--tag"
-              {...register('tag0')}
-              placeholder="Tag"
-              onChange={(e) => {
-                setTagsObj((stateObj) => ({ ...stateObj, tag0: e.target.value }))
-              }}
-              value={tagsObj.tag0}
-            />
-            <button
-              className="article-form__button form__button article-form__button--delete"
-              id="0"
-              onClick={(e) => {
-                e.preventDefault()
-                setTagsObj((stateObj) => ({ ...stateObj, tag0: '' }))
-              }}
-            >
-              Delete
-            </button>
-            <button className="article-form__button form__button" onClick={addTagOnclick}>
-              Add Tag
-            </button>
-          </div>
+          <button className="article-form__button form__button article-form__button--add" onClick={addTagOnclick}>
+            Add Tag
+          </button>
           <div className="form__input-error">
             {(errors.tags || (errorObject && errorObject.tags)) && (
               <p className="form__input-error-message">
@@ -228,7 +212,7 @@ function ArticleFormContent({ articleObj, slug }) {
           </div>
         </label>
 
-        <input className="form__submit-button article-form__submit-button" type="submit" value="Create" />
+        <input className="form__submit-button article-form__submit-button" type="submit" value="Send" />
       </form>
     </div>
   )

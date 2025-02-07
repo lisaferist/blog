@@ -24,10 +24,19 @@
     .article__title {
       display: inline-block;
       margin: 0;
-
       color: $blue;
       font-size: 20px;
       font-weight: normal;
+
+      button {
+        padding: 0;
+        background-color: inherit;
+        border: none;
+        color: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        font-family: inherit;
+      }
     }
 
     .article__like {
